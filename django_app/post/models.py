@@ -17,7 +17,9 @@ class Post(models.Model):
     created_date = models.DateTimeField(auto_now_add=True)
     modified_date = models.DateTimeField(auto_now=True)
     like_users = models.ManyToManyField(
-        User, related_name='like_posts'
+        User,
+        related_name='like_posts',
+        through='PostLike'  # makemigrations는 가능하지만, migrate는 안되기 때문에 fake옵션을 주고 수정
     )
 
     tags = models.ManyToManyField('Tag')
@@ -31,19 +33,39 @@ class Post(models.Model):
 
         tag, tag_created = Tag.objects.get_or_create(name=tag_name)
 
-        if not self.tags.filter(name=tag_name).exists():
-            self.tags.add(tag)
+        if not self.tags.filter(name=tag.id).exists():
+            self.tag.add(tag)
+
+    @property
+    def like_count(self):
+        return self.like_users.count()
+
+
+class PostLike(models.Model):
+    post = models.ForeignKey(Post)
+    user = models.ForeignKey(User)
+    created_date = models.DateTimeField(auto_now_add=True)
 
 
 class Comment(models.Model):
     post = models.ForeignKey(Post)
     author = models.ForeignKey(User)
-    photo = models.ImageField(blank=True)
+    content = models.TextField(null=True, blank=True)
     created_date = models.DateTimeField(auto_now_add=True)
     modified_date = models.DateTimeField(auto_now=True)
+    like_users = models.ManyToManyField(
+        User,
+        through='CommentLike',
+        related_name="like_comments"
+    )
 
-    content = models.TextField(null=True, blank=True)
-    # user_nickname = User.user_nickname  # User 모델
+
+class CommentLike(models.Model):
+    comment = models.ForeignKey(Comment)
+    user = models.ForeignKey(User)
+    created_date = models.DateTimeField(auto_now_add=True)
+
+
 
 
 class Tag(models.Model):
