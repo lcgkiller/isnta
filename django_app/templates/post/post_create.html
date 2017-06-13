@@ -1,12 +1,12 @@
 {% extends 'common/base.html' %}
 {% block content %}
 <h1> post_create 페이지 </h1>
-<form action="{% url 'posts:post_list' %}" method="POST" enctype="multipart/form-data">
+<form action="" methood="POST" enctype="multipart/form-data">
     {% csrf_token %}
-        {{ form.user }}
-    <br>
-        {{ form.image }}
-    <br>
-        <button type="submit" value="submit"> 등록하기 </button>
+        <div>{{ form.user }}</div>
+        <div>{{ form.image }}</div>
+        <button type="submit" value="submit">Upload</button>
 </form>
+
+<p><a href="{% url 'posts:post_list' %}">돌아가기</a></p>
 {% endblock %}

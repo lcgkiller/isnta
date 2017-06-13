@@ -1,4 +1,4 @@
-{% extends 'common/base.html' %}
+  {% extends 'common/base.html' %}
     <!--
     Detail에서 나와야 할 요소
       - 사진
@@ -8,22 +8,5 @@
       - 댓글목록(내용+목록), 댓글작성, 좋아요 버튼
       -->
 {% block content %}
-    <div>
-        <div><img src="{{ post.photo.url }}" alt=""></div>
-        <div>{{ post.author }}</div>
-        <div>{{ post.like_coutn }}</div>
-
-        {% if post.comment_set.all %}
-            {% for comment in post.comment_set.all %}
-            <div>
-                <div>작성자: {{ comment.author }}</div>
-                <div>내용 : {{ comment.content }}</div>
-                <div>작성일 : {{ comment.created_date }}</div>
-            </div>
-            {% endfor %}
-        {% else %}
-            <div>댓글이 없습니다</div>
-        {% endif %}
-    </div>
+{% include "include/post.html" %}
 {% endblock %}
-

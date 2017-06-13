@@ -56,13 +56,13 @@ def post_create(request):
         return render(request, 'post/post_create.html', context)
     elif request.method == "POST":
         form = ContactForm(request.POST, request.FILES)
-        print("벨리드 ", form.is_valid())
         if form.is_valid():
-            print("클린데이터 : ", form.is_valid())
-            image = Post(photo=request.FILES['image'])
+            print("클린데이터 : ", form.is_valid)
+            image = request.POST['image']
             user = form.cleaned_data['user']
             post = Post.objects.create(author=user, photo=image)
             form.save()
+            post.save()
             return redirect('post_list', pk=post.pk)
 
         else:

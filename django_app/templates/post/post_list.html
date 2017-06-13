@@ -1,18 +1,6 @@
 {% extends 'common/base.html' %}
 {% block content %}
-        <form action="{% url 'posts:post_create' %}">
-            <button type="submit">Upload</button>
-        </form>
-
-        {% for post in posts %}
-    <div>
-        <span>path : {{ post.photo.path }}</span> <br>
-        <span>url : {{ post.photo.url }}</span>
-
-        <div><a href="{% url 'posts:post_detail' post.pk %}">
-            <img src="{{ post.photo.url }}" alt=""></a>
-        </div>
-
-    </div>
+    {% for post in posts %}
+      {% include 'include/post.html' %}
     {% endfor %}
 {% endblock %}
