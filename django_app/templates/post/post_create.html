@@ -1,0 +1,12 @@
+{% extends 'common/base.html' %}
+{% block content %}
+<h1> post_create 페이지 </h1>
+<form action="{% url 'posts:post_list' %}" method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+        {{ form.user }}
+    <br>
+        {{ form.image }}
+    <br>
+        <button type="submit" value="submit"> 등록하기 </button>
+</form>
+{% endblock %}

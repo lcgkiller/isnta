@@ -31,19 +31,30 @@ import os
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+# django_app/templates
 TEMPLATE_DIR = os.path.join(BASE_DIR, "templates")
-print("TEMPLATES_DIR :", TEMPLATE_DIR)
+
+# django_app/static
+STATIC_DIR = os.path.join(BASE_DIR, 'static')
+
+# Managing Staticfiles
+# Static files (CSS, JavaScript, Images)
+# https://docs.djangoproject.com/en/1.11/howto/static-files/
+
+STATIC_URL = '/static/'
+STATICFILES_DIR = [
+    STATIC_DIR,
+]
+
+# MEDIA ROOT
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.11/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '!xvnwdrjvhr9-i+f8$ae^v1878()i)sy+)qujj0q%vo(eivb_e'
-
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-
-ALLOWED_HOSTS = []
 
 # Custom User
 AUTH_USER_MODEL = 'member.User'
@@ -142,7 +153,12 @@ USE_L10N = True
 USE_TZ = True
 
 
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/1.11/howto/static-files/
+# SECURITY WARNING: keep the secret key used in production secret!
+SECRET_KEY = '!xvnwdrjvhr9-i+f8$ae^v1878()i)sy+)qujj0q%vo(eivb_e'
 
-STATIC_URL = '/static/'
+# SECURITY WARNING: don't run with debug turned on in production!
+DEBUG = True
+
+ALLOWED_HOSTS = []
+
+

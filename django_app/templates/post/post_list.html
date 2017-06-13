@@ -1,17 +1,18 @@
-<!doctype html>
-<html lang="ko">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
-</head>
-<body>
-    {% for post in posts %}
+{% extends 'common/base.html' %}
+{% block content %}
+        <form action="{% url 'posts:post_create' %}">
+            <button type="submit">Upload</button>
+        </form>
 
-    <div>{{ post.id }}</div>
+        {% for post in posts %}
+    <div>
+        <span>path : {{ post.photo.path }}</span> <br>
+        <span>url : {{ post.photo.url }}</span>
 
+        <div><a href="{% url 'posts:post_detail' post.pk %}">
+            <img src="{{ post.photo.url }}" alt=""></a>
+        </div>
+
+    </div>
     {% endfor %}
-</body>
-</html>
+{% endblock %}
