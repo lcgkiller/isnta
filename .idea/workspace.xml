@@ -2,12 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="ae11a13f-d73a-4fd8-a3ab-8e466819c27a" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../django_app/db.sqlite3" afterPath="$PROJECT_DIR$/../django_app/db.sqlite3" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../.idea/workspace.xml" afterPath="$PROJECT_DIR$/../.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../django_app/post/urls.py" afterPath="$PROJECT_DIR$/../django_app/post/urls.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../django_app/post/views.py" afterPath="$PROJECT_DIR$/../django_app/post/views.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../django_app/templates/include/post.html" afterPath="$PROJECT_DIR$/../django_app/templates/include/post.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../django_app/templates/post/post_create.html" afterPath="$PROJECT_DIR$/../django_app/templates/post/post_create.html" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />

@@ -1,7 +1,7 @@
 # Created by https://www.gitignore.io/api/git,linux,django,pycharm
 
 ### Custom ###
-.idea
+.idea/
 *.swp
 
 ### Django ###
