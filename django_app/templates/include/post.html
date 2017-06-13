@@ -21,12 +21,13 @@
   </div>
   <p>좋아요 {{ post.like_counts }}개</p>
   <div class="post-comment-container">
+    <!--post에 연결된 Comment 목록을 for문으로 순회-->
+    {% for comment in post.comment_set.all %}
     <div class="post-comment">
-      <a href="" class="comment-author"></a>
-      <span class="comment-content"></span>
+      <a href="" class="comment-author">{{ comment.author }}</a>
+      <span class="comment-content">{{ comment.content }}</span>
       <a href="" class="comment-tag"></a>
-      <a href="" class="comment-tag"></a>
-      <a href="" class="comment-tag"></a>
+    {% endfor %}
     </div>
   </div>
   <p class="created">{{ post.created_date }}</p>
