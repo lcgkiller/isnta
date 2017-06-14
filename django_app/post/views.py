@@ -145,25 +145,30 @@ def comment_create(request, post_pk):
         post = Post.objects.get(pk=post_pk)
         post.add_comment(user, content)
 
-        return redirect('posts:post_list')
-
-    # if request.method == "POST":
-        #     user = User.objects.first()
-        #     post = Post.objects.create(
-        #         author = user,
-        #         photo=request.FILES['file'],
-        #     )
-        #
-        #     comment_string = request.POST.get('comment', '')
-        #     if comment_string:
-        #         # 댓글로 사용할 문자열이 전달된 경우 위에서 생성한 post객체에 연결되는 Comment 객체를 생성
-        #         post.comment_set.create(
-        #             # 임의 유저를 사용하고, 실제 로그인된 사용자로 바꿔주어야 함.
-        #             author=user,
-        #             content=comment_string,
-        #         )
+        return redirect('posts:post_detail', post_pk)
 
 
 def comment_delete(request, post_pk, comment_pk):
     # POST요청을 받아 Comment 객체를 delete, 이후 post_detail 페이지로 redirect
-    pass
+
+    post = Post.objects.get(pk=post_pk)
+    comment = post.comment_set.get(pk=comment_pk)
+
+    if request.method == "POST":
+        yes_or_no = request.POST.get('delete_yes_or_no')
+        if yes_or_no == "yes":
+            comment.delete()
+            return redirect('posts:post_detail', post_pk)
+
+
+    elif request.method == "GET":
+        context = {
+            'comment': comment
+        }
+        return render(request, 'comment/comment_delete.html', context)
+
+
+
+    # if request.method == "POST":
+    #     pass
+

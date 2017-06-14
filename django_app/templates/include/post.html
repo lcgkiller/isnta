@@ -1,7 +1,8 @@
+{% load static %}
 <article class="post">
     <header class="post-header">
         <div class="post-header-left">
-            <a href="#"><img class="circle-user-img" src="https://placehold.it/30x30" alt=""></a>
+            <a href="#"><img class="circle-user-img" src="{% static 'images/unknown.jpg' %}" alt=""></a>
             <span><a href="">{{ post.author }}</a>{{ post.id }}번 게시물</span>
         </div>
         <div class="post-header-right">
@@ -29,12 +30,14 @@
           {% for comment in post.comment_set.all %}
           <div class="post-comment">
               <a href="#" class="comment-author">{{ comment.author }}</a>
-              <span class="comment-content">{{ comment.content }}</span>
-              <a href="" class="comment-tag"></a>
+              <a href="{% url 'posts:comment_delete' comment.post.pk comment.pk %}" class="comment-tag">
+                  <span class="comment-content">{{ comment.content }}</span>
+              </a>
           </div>
           {% endfor %}
       </div>
       <p class="created">{{ post.created_date }}</p>
-      {% include "include/comment.html" %}
+        {% include "include/comment.html" %}
+
     </div>
 </article>
