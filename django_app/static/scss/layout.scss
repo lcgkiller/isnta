@@ -1,6 +1,5 @@
-$screen-tablet : 700px;
+$screen-tablet: 700px;
 $header-height: 83px;
-
 header.top-header {
   height: $header-height;
   padding: 0 10px;
@@ -9,6 +8,7 @@ header.top-header {
 header.top-header > nav {
   max-width: 1010px;
   margin: 0 auto;
+
   height: $header-height;
   // 각 div내의 a요소들은 height와 line-height를
   // 같은 값으로 가져 수직중앙정렬되도록 함
@@ -49,12 +49,11 @@ header.top-header > nav {
   }
 }
 
-
-.container{
+.container {
   max-width: 1010px;
-  margin : 0 auto;
-  padding-top : 40px;
-  @media screen and (max-width: $screen-tablet){
-    padding-top: 0px;
+  margin: 0 auto;
+  padding-top: 40px;
+  @media screen and (max-width: $screen-tablet) {
+    padding-top: 0;
   }
 }

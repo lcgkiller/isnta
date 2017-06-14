@@ -4,11 +4,14 @@ from django.contrib import admin
 
 # Post에 대한 ModelAdin을 만들고 register
 # 이후 /admin에 가서 Post확인하고 사진 첨부
-from .models import Post
+from .models import Post, Comment
 
 
 class PostAdmin(admin.ModelAdmin):
     pass
 
+class CommentAdmin(admin.ModelAdmin):
+    pass
 
 admin.site.register(Post, PostAdmin)
+admin.site.register(Comment, CommentAdmin)

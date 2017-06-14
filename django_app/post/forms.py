@@ -9,5 +9,8 @@ class ContactForm(forms.Form):
         queryset=User.objects.all(),
         required=True,
     )
-    image = forms.ImageField(label="사진", required=True)
+    file = forms.ImageField(label="사진", required=True)
 
+
+class CommentForm(forms.Form):
+    comment = forms.TextInput()

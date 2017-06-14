@@ -4,7 +4,7 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse, HttpResponseNotFound, HttpResponseRedirect
 from django.urls import reverse
 
-from .forms import ContactForm  # 버튼
+from .forms import ContactForm, CommentForm  # 버튼
 from .models import Post
 
 User = get_user_model()  # get_user_model : 자동으로 Django에서 인증에 사용되는 User모델클래스를 리턴
@@ -31,7 +31,7 @@ def post_list(request):
 # 숙제
 def post_detail(request, post_pk):
     # post_pk에 해당하는 Post객체를 리턴
-    print("POST_PK : ", post_pk)
+    print("디테일 페이지 POST_PK : ", post_pk)
 
     try:
         post = Post.objects.get(pk=post_pk)
@@ -54,39 +54,40 @@ def post_detail(request, post_pk):
 
 
 def post_create(request):
-    ###### 철규
     # POST요청을 받아 Post 객체를 생성 후 post_list 페이지로 redirect
     if request.method == "POST":
-        user = User.objects.first()
-        post = Post.objects.create(
-            author = user,
-            photo=request.FILES['file'],
-        )
-
-        comment_string = request.POST.get('comment', '')
-        if comment_string:
-            # 댓글로 사용할 문자열이 전달된 경우 위에서 생성한 post객체에 연결되는 Comment 객체를 생성
-            post.comment_set.create(
-                # 임의 유저를 사용하고, 실제 로그인된 사용자로 바꿔주어야 함.
-                author=user,
-                content=comment_string,
-            )
-
-
-        # form = ContactForm(request.POST, request.FILES)
-        # if form.is_valid():
-        #     print("클린데이터 : ", form.is_valid)
-        #     image = request.POST['image']
-        #     user = form.cleaned_data['user']
+        #     user = User.objects.first()
         #     post = Post.objects.create(
-        #         author=user,
+        #         author = user,
         #         photo=request.FILES['file'],
         #     )
-        #     # post = Post.objects.create(author=user, photo=image)
-        #     form.save()
-        #     post.save()
-        return redirect('posts :post_list', post_pk=post.pk)
+        #
+        #     comment_string = request.POST.get('comment', '')
+        #     if comment_string:
+        #         # 댓글로 사용할 문자열이 전달된 경우 위에서 생성한 post객체에 연결되는 Comment 객체를 생성
+        #         post.comment_set.create(
+        #             # 임의 유저를 사용하고, 실제 로그인된 사용자로 바꿔주어야 함.
+        #             author=user,
+        #             content=comment_string,
+        #         )
 
+        ###### 철규
+
+        form = ContactForm(request.POST, request.FILES)
+        if form.is_valid():
+            print("클린데이터 : ", form.is_valid)
+            user = form.cleaned_data['user']
+            Post.objects.create(
+                author=user,
+                photo=request.FILES['file'],
+            )
+            return redirect('posts:post_list')
+        else:
+            print(form.errors)
+            context = {
+                'form': form,
+            }
+            return render(request, 'post/post_create.html', context)
 
     else:
         form = ContactForm()
@@ -99,20 +100,68 @@ def post_create(request):
 def post_delete(request, post_pk):
     # post_pk에 해당하는 Post에 대한 delete 요청만을 받음
     # 처리 만료후에는 post_list페이지로 redirect
-    pass
+    post = Post.objects.get(id=post_pk)
+    context = {
+        'post': post,
+    }
+
+    if request.method == "POST":
+        yes_or_no = request.POST.get('delete_yes_or_no')
+        print("말해 :", yes_or_no)
+
+        if yes_or_no == "yes":
+            post.delete()
+            return redirect('posts:post_list')
+
+        elif yes_or_no == "no":
+            return redirect('posts:post_list')
+
+    return render(request, 'post/post_delete.html', context=context)
 
 
 def post_modify(request, post_pk):
     post = Post.objects.get(pk=post_pk)
+    context = {
+        'post': post,
+    }
     if request.method == 'POST':
-        data = request.POST
-        author = data['author']
-        text = data['text']
+        modify_yes = request.POST['modify']
+
+        if modify_yes == "yes":
+            photo = request.FILES['file']
+            post.photo = photo
+            post.save()
+            return redirect('posts:post_list')
+
+    return render(request, 'post/post_modify.html', context=context)
 
 
 def comment_create(request, post_pk):
     # POST 요청을 받아 Comment 객체를 생성 후 post_detail 페이지로 redirect
-    pass
+
+    if request.method == "POST":
+        content = request.POST.get('content', '')
+        user = User.objects.first()
+        post = Post.objects.get(pk=post_pk)
+        post.add_comment(user, content)
+
+        return redirect('posts:post_list')
+
+    # if request.method == "POST":
+        #     user = User.objects.first()
+        #     post = Post.objects.create(
+        #         author = user,
+        #         photo=request.FILES['file'],
+        #     )
+        #
+        #     comment_string = request.POST.get('comment', '')
+        #     if comment_string:
+        #         # 댓글로 사용할 문자열이 전달된 경우 위에서 생성한 post객체에 연결되는 Comment 객체를 생성
+        #         post.comment_set.create(
+        #             # 임의 유저를 사용하고, 실제 로그인된 사용자로 바꿔주어야 함.
+        #             author=user,
+        #             content=comment_string,
+        #         )
 
 
 def comment_delete(request, post_pk, comment_pk):

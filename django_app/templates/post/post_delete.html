@@ -1,0 +1,10 @@
+{% extends 'common/base.html' %}
+{% block content %}
+<img src="{{ post.photo.url }}" alt="">
+<p>{{ post.id }}번 게시글을 삭제하시겠습니까?</p>
+<form action="" method="post" >{% csrf_token %}
+    <button type="submit" name="delete_yes_or_no" value="yes">예</button>
+    <button type="submit" name="delete_yes_or_no" value="no">아니요</button>
+</form>
+<p><a href="{% url 'posts:post_list' %}">돌아가기</a></p>
+{% endblock %}

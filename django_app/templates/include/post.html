@@ -1,37 +1,40 @@
 <article class="post">
-  <header>
-    <div class="post-header-left">
-      <img src="" alt="">
-      <span>{{ post.author }}</span>
-    </div>
-    <div class-"post-hedder-right">
+    <header class="post-header">
+        <div class="post-header-left">
+            <a href="#"><img class="circle-user-img" src="https://placehold.it/30x30" alt=""></a>
+            <span><a href="">{{ post.author }}</a>{{ post.id }}번 게시물</span>
+        </div>
+        <div class="post-header-right">
 
+        </div>
+    </header>
+    <div class="post-photo-container">
+        <a href="{% url 'posts:post_detail' post.pk %}"><img src="{{ post.photo.url }}" alt=""></a>
     </div>
-  </header>
-  <div class="post-photo-container">
-    <img src="{{ post.photo.url }}" alt="">
-  </div>
-  <div class="post-btn-container">
-    <a href="">
-      <img src="" alt="">
-    </a>
-    <a href="">
-      <img src="" alt="">
-    </a>
-  </div>
-  <p>좋아요 {{ post.like_counts }}개</p>
-  <div class="post-comment-container">
-    <!--post에 연결된 Comment 목록을 for문으로 순회-->
-    {% for comment in post.comment_set.all %}
-    <div class="post-comment">
-      <a href="" class="comment-author">{{ comment.author }}</a>
-      <span class="comment-content">{{ comment.content }}</span>
-      <a href="" class="comment-tag"></a>
-    {% endfor %}
+    <div class="post-content-container">
+    <div class="post-btn-container">
+          <a href="">
+              <img src="" alt="">
+          </a>
+          <a href="">
+              <img src="" alt="">
+          </a>
+      </div>
+      <div class="post-like">
+        <p>좋아요 {{ post.like_counts }}개</p>
+      </div>
+      <div class="post-comment-container">
+
+          <!--post에 연결된 Comment 목록을 for문으로 순회-->
+          {% for comment in post.comment_set.all %}
+          <div class="post-comment">
+              <a href="#" class="comment-author">{{ comment.author }}</a>
+              <span class="comment-content">{{ comment.content }}</span>
+              <a href="" class="comment-tag"></a>
+          </div>
+          {% endfor %}
+      </div>
+      <p class="created">{{ post.created_date }}</p>
+      {% include "include/comment.html" %}
     </div>
-  </div>
-  <p class="created">{{ post.created_date }}</p>
-  <form action="">
-    <input type="text" placeholder="댓글달기">
-  </form>
 </article>
