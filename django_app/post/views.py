@@ -4,8 +4,7 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse, HttpResponseNotFound, HttpResponseRedirect
 from django.urls import reverse
 
-from .forms import ContactForm, CommentForm  # 버튼
-from .models import Post
+from .forms import ContactForm  # 버튼
 
 User = get_user_model()  # get_user_model : 자동으로 Django에서 인증에 사용되는 User모델클래스를 리턴
 
@@ -148,6 +147,8 @@ def comment_create(request, post_pk):
         return redirect('posts:post_detail', post_pk)
 
 
+
+
 def comment_delete(request, post_pk, comment_pk):
     # POST요청을 받아 Comment 객체를 delete, 이후 post_detail 페이지로 redirect
 
@@ -169,6 +170,5 @@ def comment_delete(request, post_pk, comment_pk):
 
 
 
-    # if request.method == "POST":
-    #     pass
-
+        # if request.method == "POST":
+        #     pass
