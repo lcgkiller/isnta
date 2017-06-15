@@ -166,9 +166,6 @@ def comment_delete(request, post_pk, comment_pk):
         context = {
             'comment': comment
         }
-        return render(request, 'comment/comment_delete.html', context)
+        # return render(request, 'comment/comment_delete.html', context)
 
 
-
-        # if request.method == "POST":
-        #     pass

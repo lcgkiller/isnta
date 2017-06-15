@@ -4,5 +4,6 @@ from . import views
 app_name = 'login'
 
 urlpatterns = [
-    url(r'^login/', views.login, name='login')
+    url(r'^login/', views.login, name='login'),
+    url(r'^logout/', views.logout, name='logout')
 ]
