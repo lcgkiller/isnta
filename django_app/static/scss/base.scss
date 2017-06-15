@@ -4,7 +4,7 @@ html, body {
   background-color: #fafafa;
 
 }
-input[type="text"] {
+input[type=text], input[type=password] {
   border: 1px solid #dbdbdb;
   border-radius: 3px;
   color: #262626;
