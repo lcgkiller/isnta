@@ -7,6 +7,10 @@ from django.contrib.auth import \
  \
  \
 # Create your views here.
+
+from .models import User
+
+
 def login(request):
     # member/login.html 생성
     #   username, password, button이 있는 html 생성
@@ -41,3 +45,28 @@ def login(request):
 def logout(request):
     django_logout(request)
     return redirect('posts:post_list')
+
+
+def signup(request):
+    # member/signup.html을 사용
+    #   1. username, password1, passwords2를 받아 회원가입.
+    #   2. 기존에 존재하는 유저인지 검사
+    #   3. password1, 2가 일치하는지 검사
+    #   4. 각각의 경우를 검사해서 틀릴 경우 오류메시지 리턴
+    #   5. 가입성공시 로그인시키고 post_list로 redirect
+
+    if request.method == "POST":
+        username = request.POST['username']
+        password1 = request.POST['password1']
+        password2 = request.POST['password2']
+        if User.objects.filter(username=username).exists():
+            return HttpResponse('Username is already exists')
+        elif password1 != password2:
+            return HttpResponse('패스워드가 다릅니다.'.format(username))
+
+        user = User.objects.create_user(username=username, password=password1)
+        django_login(request, user)
+        return redirect("posts:post_list")
+
+    else:
+        return render(request, 'member/signup.html')
