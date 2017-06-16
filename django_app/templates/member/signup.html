@@ -2,43 +2,10 @@
 
 {% block content %}
 <div class="content">
-<form action="" method="POST">
-    {% csrf_token %}
-
-    <!--form 자체에 대한 error( by Form.clean() ValidationError ) -->
-    {% if form.non_field_errors %}
-
-    <ul class="errors">
-        {% for error in form.non_field_errors %}
-        <li>{{ error }}</li>
-        {% endfor %}
-    </ul>
-    {% endif %}
-
-
-    <!--form을 순회하면서 form이 가진 필드를 매 루프마다 생성-->
-    {% for field in form %}
-        <div class="field-wrapper">
-            {{ field.label_tag }}
-            {{ field }}
-
-            {% if field.help_text %}
-            <p class="help">{{ field.help_text }}</p>
-            {% endif %}
-
-            {% if field.errors %}
-            <ul class="errors">
-                {% for error in field.errors %}
-                <li>{{ error }}</li>
-                {% endfor %}
-            </ul>
-            {% endif %}
-        </div>
-    {% endfor %}
-    <div>
+    <form action="" method="POST">
+        {% csrf_token %}
+        {% include 'include/field_set.html' %}
         <button type="submit">가입하기</button>
-    </div>
-</form>
+    </form>
 </div>
-
 {% endblock %}

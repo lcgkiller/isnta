@@ -88,15 +88,8 @@ def signup(request):
         ### Form을 사용한 경우
         form = SignupForm(data=request.POST)
         if form.is_valid():
-            username = form.cleaned_data['username']
-            password1 = form.cleaned_data['password1']
-            password2 = form.cleaned_data['password2']
-
-            form.clean_username()
-            form.clean_password()
-
-            user = User.objects.create_user(username=username, password=password1)
-
+            user = form.create_user()
+            print("유저 누구? ", user)
             # 위에서 생성한 유저를 로그인 시킨 후, post_list뷰로 이동
             django_login(request, user)
             return redirect("posts:post_list")
