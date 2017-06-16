@@ -40,21 +40,25 @@ def login(request):
             # is_valid를 실행하면 clean 메서드가 실행된다.
             user = form.cleaned_data['user']
             django_login(request, user)
+
+            # 일반적인 경우 post_list로 이동하지만, GET parameter의 next 속성값이 있을 경우 해당 URL로 이동
+            next = request.GET.get('next')
+            if next:
+
             return redirect('posts:post_list')
 
-        else:
-            return HttpResponse("Login invalid!")
 
+    # GET 요청
     else:
         # 02. 이미 로그인 된 상태일 경우에는 post_list로 redirect
         if request.user.is_authenticated:
             return redirect("posts:post_list")
 
         form = LoginForm()
-        context = {
-            'form': form,
-        }
-        return render(request, 'member/login.html', context)
+    context = {
+        'form': form,
+    }
+    return render(request, 'member/login.html', context)
 
 
 def logout(request):
