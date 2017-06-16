@@ -1,10 +1,11 @@
 from django.contrib.auth import get_user_model
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.shortcuts import render, redirect
 from django.http import HttpResponse, HttpResponseNotFound, HttpResponseRedirect
 from django.urls import reverse
 
-from .forms import ContactForm  # 버튼
+from .forms.post import PostForm
 
 User = get_user_model()  # get_user_model : 자동으로 Django에서 인증에 사용되는 User모델클래스를 리턴
 
@@ -51,10 +52,12 @@ def post_detail(request, post_pk):
     }
     return render(request, 'post/post_detail.html', context)
 
-
+@login_required
 def post_create(request):
     # POST요청을 받아 Post 객체를 생성 후 post_list 페이지로 redirect
     if request.method == "POST":
+        if not request.user.is_authenticated:
+            return redirect('member:login')
         #     user = User.objects.first()
         #     post = Post.objects.create(
         #         author = user,
@@ -71,29 +74,20 @@ def post_create(request):
         #         )
 
         ###### 철규
-
-        form = ContactForm(request.POST, request.FILES)
+        form = PostForm(data=request.POST, files=request.FILES)
         if form.is_valid():
-            print("클린데이터 : ", form.is_valid)
-            user = form.cleaned_data['user']
-            Post.objects.create(
-                author=user,
-                photo=request.FILES['file'],
-            )
-            return redirect('posts:post_list')
-        else:
-            print(form.errors)
-            context = {
-                'form': form,
-            }
-            return render(request, 'post/post_create.html', context)
+            # ModelForm의 save()메서드를 사용해 Post객체를 가져온다.
+            post = form.save(commit=False)
+            post.author = request.user
+            post.save()
+            return redirect('post:post_detail', post_pk=post.pk)
 
     else:
-        form = ContactForm()
-        context = {
-            'form': form,
-        }
-        return render(request, 'post/post_create.html', context)
+        form = PostForm()
+    context = {
+        'form': form,
+    }
+    return render(request, 'post/post_create.html', context)
 
 
 def post_delete(request, post_pk):

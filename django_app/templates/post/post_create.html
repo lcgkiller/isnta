@@ -3,10 +3,8 @@
 <h1> post_create 페이지 </h1>
 <form action="" method="POST" enctype="multipart/form-data">
     {% csrf_token %}
-    <div>{{ form.user }}</div>
-    <input type="file" name="file">
-    <input type="text" name="comment" placeholder="댓글">
-    <button type="submit">등록</button>
+    {% include 'include/field_set.html' %}
+    <button type="submit" class="btn">등록</button>
 </form>
 
 

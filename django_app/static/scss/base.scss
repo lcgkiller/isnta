@@ -16,6 +16,10 @@ input[type=text], input[type=password] {
   background-color: rgba(219, 219, 219, 0.3);
 }
 
+input[type=file] {
+  font-size: 12px;
+}
+
 a {
   color : $color-text-common;
   text-decoration: none;

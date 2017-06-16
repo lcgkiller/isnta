@@ -7,6 +7,7 @@ User = get_user_model()
 class SignupForm(forms.Form):
     # SignupForm을 구성하고 해당 form을 view에서 사용하도록 설정
     username = forms.CharField(widget=forms.TextInput)
+    nickname = forms.CharField(widget=forms.TextInput, max_length=24)
     password1 = forms.CharField(widget=forms.PasswordInput)
     password2 = forms.CharField(widget=forms.PasswordInput)
 
@@ -21,6 +22,14 @@ class SignupForm(forms.Form):
             )
 
         return username
+
+    def clean_nickname(self):
+        nickname = self.cleaned_data.get('nickname')
+        if nickname and User.objects.filter(nickname=nickname).exists():
+            raise forms.ValidationError(
+                '닉네임이 중복되었습니다'
+            )
+        return nickname
 
     def clean_password2(self):
         # password1과 password2를 비교하여 같은지 비교
@@ -37,9 +46,11 @@ class SignupForm(forms.Form):
 
     def create_user(self):
         # 자신의 cleaned_data를 사용해서 유저를 생성
-
+        password = self.cleaned_data['password2']
         user = User.objects.create(
             user=self.cleaned_data['username'],
-            password=self.cleaned_data['password2']
+            nickname=self.cleaned_data['nickname'],
+            password=password
         )
         return user
+
