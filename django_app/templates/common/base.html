@@ -44,22 +44,21 @@
 				</div>
 			</nav>
 			<nav>
-			<div>
-				{% if user.is_authenticated %}
-				<span>{{ user }}님이 로그인중입니다.</span>
-				<a href="{% url 'member:logout' %}" class="btn">로그아웃</a>
-				{% else %}
-				<a href="{% url 'member:login' %}" class="btn">로그인하러가기</a>
-				<a href="{% url 'member:signup' %}" class="btn">회원가입</a>
-				{% endif %}
-			</div>
+				<div>
+					{% if user.is_authenticated %}
+					<span>{{ user }}님이 로그인중입니다.</span>
+						<a href="{% url 'member:logout' %}" class="btn">로그아웃</a>
+					{% else %}
+						<a href="{% url 'member:login' %}" class="btn">로그인</a>
+						<a href="{% url 'member:signup' %}" class="btn">회원가입</a>
+					{% endif %}
+				</div>
 			</nav>
 		</header>
-
 			<div class="container">
-			{% block content %}
-			{% endblock %}
+				{% block content %}
+				{% endblock %}
+			</div>
 		</div>
-	</div>
 </body>
 </html>

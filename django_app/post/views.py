@@ -147,8 +147,6 @@ def comment_create(request, post_pk):
         return redirect('posts:post_detail', post_pk)
 
 
-
-
 def comment_delete(request, post_pk, comment_pk):
     # POST요청을 받아 Comment 객체를 delete, 이후 post_detail 페이지로 redirect
 
@@ -167,5 +165,3 @@ def comment_delete(request, post_pk, comment_pk):
             'comment': comment
         }
         # return render(request, 'comment/comment_delete.html', context)
-
-
