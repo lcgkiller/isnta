@@ -1,5 +1,15 @@
 @import 'variables';
-
+html {
+  height: 100%;
+}
+body {
+  height: 100%;
+}
+.wrap {
+  height: 100%;
+  overflow-y: auto;
+  overflow-x: auto;
+}
 html, body {
   font-size: 14px;
   line-height: 18px;

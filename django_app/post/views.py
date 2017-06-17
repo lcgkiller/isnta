@@ -80,7 +80,7 @@ def post_create(request):
             post = form.save(commit=False)
             post.author = request.user
             post.save()
-            return redirect('post:post_detail', post_pk=post.pk)
+            return redirect('posts:post_detail', post_pk=post.pk)
 
     else:
         form = PostForm()
@@ -137,8 +137,11 @@ def comment_create(request, post_pk):
         user = User.objects.first()
         post = Post.objects.get(pk=post_pk)
         post.add_comment(user, content)
+        print(request.POST)
+        print("x값 : ",request.POST.get('scrollx'))
+        print("y값 : ",request.POST.get('scrolly'))
 
-        return redirect('posts:post_detail', post_pk)
+        return redirect('posts:post_list')
 
 
 def comment_delete(request, post_pk, comment_pk):
