@@ -137,9 +137,6 @@ def comment_create(request, post_pk):
         user = User.objects.first()
         post = Post.objects.get(pk=post_pk)
         post.add_comment(user, content)
-        print(request.POST)
-        print("x값 : ",request.POST.get('scrollx'))
-        print("y값 : ",request.POST.get('scrolly'))
 
         return redirect('posts:post_list')
 
@@ -161,4 +158,4 @@ def comment_delete(request, post_pk, comment_pk):
         context = {
             'comment': comment
         }
-        # return render(request, 'comment/comment_delete.html', context)
+        return render(request, 'comment/comment_delete.html', context)

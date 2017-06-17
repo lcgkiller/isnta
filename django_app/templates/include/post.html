@@ -38,12 +38,21 @@
               <a href="#" class="comment-author">{{ comment.author }}</a>
               <a href="{% url 'posts:comment_delete' comment.post.pk comment.pk %}" class="comment-tag">
                   <span class="comment-content" >{{ comment.content }}</span>
+                  <span class="delete">delete</span>
               </a>
           </div>
           {% endfor %}
       </div>
       <p class="created">{{ post.created_date }}</p>
         {% include "comment/comment_create.html" %}
-
     </div>
 </article>
+<script>
+    $(document).ready(function(){
+    $('.delete').click(function(){
+        $(this).parent().remove();
+        return false;
+    });
+});
+</script>
+

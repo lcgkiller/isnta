@@ -88,3 +88,16 @@ form.form-inline-login {
 .container > .content{
   padding: 10px;
 }
+
+.post-comment {
+
+
+  .comment-tag:hover .delete {
+    display:inline
+  }
+
+  .delete {
+    color : red;
+    display: none;
+  }
+}
