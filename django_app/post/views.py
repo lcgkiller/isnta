@@ -13,8 +13,7 @@ User = get_user_model()  # get_user_model : 자동으로 Django에서 인증에 
 from .models import Post
 
 
-def index(request):
-    return HttpResponse("Hello World")
+
 
 
 def post_list(request):

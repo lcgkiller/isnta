@@ -11,9 +11,14 @@
     </header>
     <div class="post-photo-container">
         {% if type == 'list' %}
-        <a href="{% url 'posts:post_detail' post.pk %}">
+        <div class="photo-container">
             <img src="{{ post.photo.url }}" alt="">
-        </a>
+            <div class="overlay"></div>
+            <div class="overlay-button">
+                <a href="{% url 'posts:post_detail' post.pk %}"> DETAIL </a>
+                <a href="{% url 'posts:post_delete' post.pk%}"> DELETE </a>
+            </div>
+        </div>
         {% else %}
             <img src="{{ post.photo.url }}" alt="">
         {% endif %}
@@ -55,4 +60,3 @@
     });
 });
 </script>
-
