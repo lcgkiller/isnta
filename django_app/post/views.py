@@ -1,7 +1,7 @@
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse, HttpResponseNotFound, HttpResponseRedirect
 from django.urls import reverse
 
@@ -87,28 +87,6 @@ def post_create(request):
     }
     return render(request, 'post/post_create.html', context)
 
-
-def post_delete(request, post_pk):
-    # post_pk에 해당하는 Post에 대한 delete 요청만을 받음
-    # 처리 만료후에는 post_list페이지로 redirect
-    post = Post.objects.get(id=post_pk)
-    context = {
-        'post': post,
-    }
-
-    if request.method == "POST":
-        yes_or_no = request.POST.get('delete_yes_or_no')
-        print("말해 :", yes_or_no)
-
-        if yes_or_no == "yes":
-            post.delete()
-            return redirect('posts:post_list')
-
-        elif yes_or_no == "no":
-            return redirect('posts:post_list')
-
-    return render(request, 'post/post_delete.html', context=context)
-
 @post_owner
 @login_required
 def post_modify(request, post_pk):
@@ -127,6 +105,27 @@ def post_modify(request, post_pk):
         'form': form,
     }
     return render(request, 'post/post_modify.html', context=context)
+
+
+@post_owner
+@login_required
+def post_delete(request, post_pk):
+    # post_pk에 해당하는 Post에 대한 delete 요청만을 받음
+    # 처리 만료후에는 post_list페이지로 redirect
+    post = get_object_or_404(Post, pk=post_pk)
+    post.delete()
+    return redirect('posts:post_list')
+    # if request.method == "POST":
+    #     yes_or_no = request.POST.get('delete_yes_or_no')
+    #     print("말해 :", yes_or_no)
+    #
+    #     if yes_or_no == "yes":
+    #         post.delete()
+    #         return redirect('posts:post_list')
+    #
+    #     elif yes_or_no == "no":
+    #         return redirect('posts:post_list')
+    # return render(request, 'post/post_delete.html')
 
 
 def comment_create(request, post_pk):

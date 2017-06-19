@@ -3,10 +3,9 @@
     <header class="post-header">
         <div class="post-header-left">
             <a href="#"><img class="circle-user-img" src="{% static 'images/unknown.jpg' %}" alt=""></a>
-            <span class="header-author"><a href="">{{ post.author }}</a>  {{ post.id }}번 게시물</span>
+            <span class="header-author"><a href="">{{ post.author }}</a> {{ post.id }}번 게시물</span>
         </div>
         <div class="post-header-right">
-
         </div>
     </header>
     <div class="post-photo-container">
@@ -16,8 +15,8 @@
             <div class="overlay"></div>
             <div class="overlay-button">
                 <a href="{% url 'posts:post_detail' post.pk %}"> DETAIL </a>
-                <a href="{% url 'posts:post_modify' post.pk %}"> MODIFY </a>
                 {% if user == post.author %}
+                <a href="{% url 'posts:post_modify' post.pk %}"> MODIFY </a>
                 <a href="{% url 'posts:post_delete' post.pk %}"> DELETE </a>
                 {% endif %}
             </div>
