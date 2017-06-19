@@ -1,5 +1,5 @@
 from django import forms
-from ..models import Post
+from ..models import Post, Comment
 
 
 class PostForm(forms.ModelForm):
@@ -9,6 +9,10 @@ class PostForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['photo'].required = True
+
+        # 글 작성할 때 comment를 달았으면 초기값으로 정해준다.
+        if self.instance.my_comment:
+            self.fields['comment'].initial = self.instance.my_comment.content
 
     comment = forms.CharField(
         required=False,
@@ -26,7 +30,6 @@ class PostForm(forms.ModelForm):
 
         # 전달된 키워드인자 중 'commit'키 값을 가져옴
         commit = kwargs.get('commit', True)
-
         # author가 없을 경우 None을 가진다.
         author = kwargs.pop('author', None)
 
@@ -35,16 +38,22 @@ class PostForm(forms.ModelForm):
         instance = super().save(**kwargs)
 
         # commit 인수가 True이며 comment필드가 채워져 있을 경우 Comment생성 로직을 진행
+        # 해당 Comment는 instacne의 my_comment필드를 채워준다.
         #   이 위에서 super().save()를 실행하기 때문에 현재 위치에서는 author나 pk에 대한 검증이 끝난 상태임
         comment_string = self.cleaned_data['comment']
 
         if commit and comment_string:
-            if commit and comment_string:
-                # RelatedManager를 사용해 Comment 객체를 생성 및 저장
-                instance.comment_set.create(
-                    author=instance.author,
+            # my_comment가 있는 경우 (update 상황에 해당)
+            if instance.my_comment:
+                instance.my_comment.content = comment_string
+                instance.my_comment.save()
+            # my_comment가 없는 경우 (Comment객체를 생성해 my_comment OTO field에 할당)
+            else:
+                instance.my_comment = Comment.objects.create(
+                    post=instance,
+                    author=author,
                     content=comment_string,
                 )
-
+            instance.save()
         # ModelForm의 save()에서 반환해야 하는 model의 인스턴스를 리턴
         return instance

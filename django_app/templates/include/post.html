@@ -3,7 +3,7 @@
     <header class="post-header">
         <div class="post-header-left">
             <a href="#"><img class="circle-user-img" src="{% static 'images/unknown.jpg' %}" alt=""></a>
-            <span><a href="">{{ post.author }}</a>  {{ post.id }}번 게시물</span>
+            <span class="header-author"><a href="">{{ post.author }}</a>  {{ post.id }}번 게시물</span>
         </div>
         <div class="post-header-right">
 
@@ -25,32 +25,33 @@
         {% endif %}
     </div>
     <div class="post-content-container">
-    <div class="post-btn-container">
-          <a href="">
-              <img src="" alt="">
-          </a>
-          <a href="">
-              <img src="" alt="">
-          </a>
+    <div class="post-bottom">
+      <div class="post-btn-container">
+            <a href="">
+                <img src="{% static 'images/post_comment.png' %}" alt="">
+            </a>
+            <a href="">
+                <img src="{% static 'images/post_heart.png' %}" alt="">
+            </a>
+        </div>
+        <div class="post-like">
+          <p class="comment">좋아요 {{ post.like_count }}개</p>
+        </div>
+        <div class="post-comment-container">
+            <!--post에 연결된 Comment 목록을 for문으로 순회-->
+            {% for comment in post.comment_set.all %}
+            <div class="post-comment">
+                <a href="#" class="comment-author">{{ comment.author }}</a>
+                <a href="{% url 'posts:comment_delete' comment.post.pk comment.pk %}" class="comment-tag">
+                    <span class="comment-content" >{{ comment.content }}</span>
+                    <span class="delete">delete</span>
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+        <p class="created">{{ post.created_date }}</p>
+          {% include "comment/comment_create.html" %}
       </div>
-      <div class="post-like">
-        <p>좋아요 {{ post.like_counts }}개</p>
-      </div>
-      <div class="post-comment-container">
-
-          <!--post에 연결된 Comment 목록을 for문으로 순회-->
-          {% for comment in post.comment_set.all %}
-          <div class="post-comment">
-              <a href="#" class="comment-author">{{ comment.author }}</a>
-              <a href="{% url 'posts:comment_delete' comment.post.pk comment.pk %}" class="comment-tag">
-                  <span class="comment-content" >{{ comment.content }}</span>
-                  <span class="delete">delete</span>
-              </a>
-          </div>
-          {% endfor %}
-      </div>
-      <p class="created">{{ post.created_date }}</p>
-        {% include "comment/comment_create.html" %}
     </div>
 </article>
 <script>

@@ -110,20 +110,21 @@ def post_delete(request, post_pk):
 
 
 def post_modify(request, post_pk):
+    # 수정하고자 하는 Post 객체를 얻어온다.
     post = Post.objects.get(pk=post_pk)
-    context = {
-        'post': post,
-    }
     if request.method == 'POST':
-        modify_yes = request.POST['modify']
+        form = PostForm(data=request.POST, files=request.FILES, instance=post)
+        if form.is_valid():
+            form.save()
+            return redirect('post:post_detail', post_pk)
 
-        if modify_yes == "yes":
-            photo = request.FILES['file']
-            post.photo = photo
-            post.save()
-            return redirect('posts:post_list')
+    else:
+        form = PostForm(instance=post)
 
-    return render(request, 'post/post_modify.html', context=context)
+    context = {
+        'form': form,
+    }
+    return render(request, 'post/post_create.html', context=context)
 
 
 def comment_create(request, post_pk):

@@ -11,6 +11,9 @@ urlpatterns = [
     url(r'^delete/(?P<post_pk>[0-9]+)/$', views.post_delete, name='post_delete'),
     url(r'^modify/(?P<post_pk>[0-9]+)/$', views.post_modify, name='post_modify'),
     url(r'^comment_add/(?P<post_pk>[0-9]+)/$', views.comment_create, name='comment_add'),
-    url(r'^comment_delete/(?P<post_pk>[0-9]+)/(?P<comment_pk>[0-9]+)/$', views.comment_delete, name='comment_delete')
+    url(r'^comment_delete/(?P<post_pk>[0-9]+)/(?P<comment_pk>[0-9]+)/$', views.comment_delete, name='comment_delete'),
+
+
+    # 위쪽의 결과들과 매칭되지 않을 경우
 ]
 
