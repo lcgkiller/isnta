@@ -13,9 +13,6 @@ User = get_user_model()  # get_user_model : 자동으로 Django에서 인증에 
 from .models import Post
 
 
-
-
-
 def post_list(request):
     # 1. 모든 Post 목록을 'post'라는 key로 context에 담아 return render 처리
     # 2. post/post_list.html을 템플릿으로 사용
@@ -51,13 +48,16 @@ def post_detail(request, post_pk):
     }
     return render(request, 'post/post_detail.html', context)
 
+
 @login_required
 def post_create(request):
     # POST요청을 받아 Post 객체를 생성 후 post_list 페이지로 redirect
+
     if request.method == "POST":
         if not request.user.is_authenticated:
             return redirect('member:login')
-        #     user = User.objects.first()
+
+        # user = User.objects.first()
         #     post = Post.objects.create(
         #         author = user,
         #         photo=request.FILES['file'],
@@ -76,9 +76,7 @@ def post_create(request):
         form = PostForm(data=request.POST, files=request.FILES)
         if form.is_valid():
             # ModelForm의 save()메서드를 사용해 Post객체를 가져온다.
-            post = form.save(commit=False)
-            post.author = request.user
-            post.save()
+            post = form.save(author=request.user)
             return redirect('posts:post_detail', post_pk=post.pk)
 
     else:

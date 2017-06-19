@@ -24,6 +24,8 @@ class Post(models.Model):
 
     tags = models.ManyToManyField('Tag', blank=True)
 
+    class Meta:
+        ordering = ['-pk', ]
     def add_comment(self, user, content):
         # 자신을 post로 갖고, 전달받은 user를 author로 가지며, content를 content 필드내용으로 넣는 Comment 객체를 생성
         return self.comment_set.create(author=user, content=content)

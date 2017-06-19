@@ -16,7 +16,8 @@
             <div class="overlay"></div>
             <div class="overlay-button">
                 <a href="{% url 'posts:post_detail' post.pk %}"> DETAIL </a>
-                <a href="{% url 'posts:post_delete' post.pk%}"> DELETE </a>
+                <a href="{% url 'posts:post_modify' post.pk %}"> MODIFY </a>
+                <a href="{% url 'posts:post_delete' post.pk %}"> DELETE </a>
             </div>
         </div>
         {% else %}
