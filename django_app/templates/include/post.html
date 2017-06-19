@@ -17,7 +17,9 @@
             <div class="overlay-button">
                 <a href="{% url 'posts:post_detail' post.pk %}"> DETAIL </a>
                 <a href="{% url 'posts:post_modify' post.pk %}"> MODIFY </a>
+                {% if user == post.author %}
                 <a href="{% url 'posts:post_delete' post.pk %}"> DELETE </a>
+                {% endif %}
             </div>
         </div>
         {% else %}

@@ -5,6 +5,7 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse, HttpResponseNotFound, HttpResponseRedirect
 from django.urls import reverse
 
+from post.decorators import post_owner
 from .forms.post import PostForm
 
 User = get_user_model()  # get_user_model : 자동으로 Django에서 인증에 사용되는 User모델클래스를 리턴
@@ -108,7 +109,8 @@ def post_delete(request, post_pk):
 
     return render(request, 'post/post_delete.html', context=context)
 
-
+@post_owner
+@login_required
 def post_modify(request, post_pk):
     # 수정하고자 하는 Post 객체를 얻어온다.
     post = Post.objects.get(pk=post_pk)
@@ -116,7 +118,7 @@ def post_modify(request, post_pk):
         form = PostForm(data=request.POST, files=request.FILES, instance=post)
         if form.is_valid():
             form.save()
-            return redirect('post:post_detail', post_pk)
+            return redirect('posts:post_detail', post_pk)
 
     else:
         form = PostForm(instance=post)
@@ -124,7 +126,7 @@ def post_modify(request, post_pk):
     context = {
         'form': form,
     }
-    return render(request, 'post/post_create.html', context=context)
+    return render(request, 'post/post_modify.html', context=context)
 
 
 def comment_create(request, post_pk):
