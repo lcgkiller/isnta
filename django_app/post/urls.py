@@ -14,7 +14,7 @@ urlpatterns = [
     # comment
     url(r'^(?P<post_pk>[0-9]+)/comment/create/$', views.comment_create, name='comment_create'),
     url(r'^comment/(?P<comment_pk>[0-9]+)/modify/$', views.comment_modify, name='comment_modify'),
-    url(r'^comment_delete/(?P<post_pk>[0-9]+)/(?P<comment_pk>[0-9]+)/$', views.comment_delete, name='comment_delete'),
+    url(r'^comment/(?P<comment_pk>[0-9]+)/delete/$', views.comment_delete, name='comment_delete'),
 
 
 ]

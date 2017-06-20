@@ -73,20 +73,9 @@ def comment_modify(request, comment_pk):
 @require_POST
 @login_required
 def comment_delete(request, post_pk, comment_pk):
-    # POST요청을 받아 Comment 객체를 delete, 이후 post_detail 페이지로 redirect
-    # CommentForm을 만들어서 해당 Form안에서 생성/수정가능하도록 사용
-    post = Post.objects.get(pk=post_pk)
-    comment = post.comment_set.get(pk=comment_pk)
-
-    if request.method == "POST":
-        yes_or_no = request.POST.get('delete_yes_or_no')
-        if yes_or_no == "yes":
-            comment.delete()
-            return redirect('posts:post_detail', post_pk)
-
-    elif request.method == "GET":
-        context = {
-            'comment': comment
-        }
-        return render(request, 'comment/comment_delete.html', context)
+    # comment_delete 이후에 원래 페이지로 돌아갈 수 있도록 처리해보기
+    comment = get_object_or_404(Comment, pk=comment_pk)
+    post = comment.post
+    comment.delete()
+    return redirect('posts:post_detail', post_pk=post.pk)
 
