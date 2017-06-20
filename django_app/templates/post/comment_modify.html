@@ -1,0 +1,17 @@
+{% extends 'common/base.html' %}
+
+{% comment %}
+    template 안에서 request.GET의 내용을 쓰는 법
+    {{ request.GET.[key] }}
+{% endcomment %}
+
+{% block content %}
+<div class="content">
+    <h3>Comment Modify</h3>
+    <form action="" method="POST">
+        {% csrf_token %}
+        {% include 'include/field_set.html' %}
+        <button type="submit" class="btn">수정</button>
+    </form>
+</div>
+{% endblock %}

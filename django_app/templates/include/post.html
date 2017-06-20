@@ -43,15 +43,8 @@
         <div class="post-comment-container">
             <!--post에 연결된 Comment 목록을 for문으로 순회-->
             {% for comment in post.comment_set.all %}
-            <div class="post-comment">
-                <a href="#" class="comment-author">{{ comment.author }}</a>
-                <a href="{% url 'posts:comment_delete' comment.post.pk comment.pk %}" class="comment-tag">
-                    <span class="comment-content" >{{ comment.content }}</span>
-                    <span class="delete">delete</span>
-                </a>
-            </div>
+                {% include 'include/post_comment.html' %}
             {% endfor %}
-        </div>
         <p class="created">{{ post.created_date }}</p>
         <form action="{% url 'posts:comment_create' post_pk=post.pk %}?next={{ request.path }}#post--{{ post.pk }}" method="POST">
             {% csrf_token %}

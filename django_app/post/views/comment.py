@@ -3,9 +3,9 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views.decorators.http import require_POST
 
+from post.decorators import comment_owner
 from ..forms import CommentForm
-from ..models import Post
-
+from ..models import Post, Comment
 
 __all__ = (
     'comment_modify',
@@ -48,8 +48,30 @@ def comment_create(request, post_pk):
         #     post = Post.objects.get(pk=post_pk)
         #     post.add_comment(user, content)
 
+@comment_owner
+@login_required
+def comment_modify(request, comment_pk):
+    # get_object_or_404를 이용해서 Comment 객체 가져오기
+    comment = get_object_or_404(Comment, pk=comment_pk)
+    next = request.GET.get('next')
+    if request.method == 'POST':
+        # Form을 이용해 업데이트 (data에 포함된 부분만  update됨)
+        form = CommentForm(data=request.POST, instance=comment)
+        form.save()
+        if next:
+            return redirect(next)
+        return redirect('posts:post_detail', post_pk=comment.post.pk)
+    else:
+        form = CommentForm(instance=comment)
+    context = {
+        'form': form,
+    }
+    return render(request, 'post/comment_modify.html', context)
 
 
+@comment_owner
+@require_POST
+@login_required
 def comment_delete(request, post_pk, comment_pk):
     # POST요청을 받아 Comment 객체를 delete, 이후 post_detail 페이지로 redirect
     # CommentForm을 만들어서 해당 Form안에서 생성/수정가능하도록 사용
@@ -68,5 +90,3 @@ def comment_delete(request, post_pk, comment_pk):
         }
         return render(request, 'comment/comment_delete.html', context)
 
-def comment_modify(request):
-    pass

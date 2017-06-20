@@ -92,8 +92,9 @@ form.form-inline-login {
 .post-comment {
 
 
-  .comment-tag:hover .delete {
-    display:inline
+  .comment-tag:hover .btn-xs {
+    display:inline;
+    display:none;
   }
 
   .delete {

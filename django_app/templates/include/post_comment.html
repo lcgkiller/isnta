@@ -1,7 +1,9 @@
 <div class="post-comment"> {% if style == 'red' %} style="color: red;"{% endif %}>
     <a href="#" class="comment-author">{{ comment.author }}</a>
-    <a href="{% url 'posts:comment_delete' comment.post.pk comment.pk %}" class="comment-tag">
+    <a href="{% url 'posts:comment_delete' comment.post.pk comment.pk %}" class="comment-tag"></a>
         <span class="comment-content" >{{ comment.content }}</span>
-        <span class="delete">delete</span>
-    </a>
+        {% if request.user == comment.author %}
+        <a href="{% url 'posts:comment_delete' comment.post.pk comment.pk %}" class="btn btn-xs">삭제</a>
+        <a href="{% url 'posts:comment_modify' comment_pk=comment.pk %}?next={{ request.path }}#post-{{ comment.pst.pk }}" class="btn btn-xs">수정</a>
+        {% endif %}
 </div>

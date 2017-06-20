@@ -1,0 +1,5 @@
+  <form action="{% url 'posts:comment_create' post.pk %}" method="POST"
+        name="enrollment" onsubmit="return saveScrollPositions(this);">
+    {% csrf_token %}
+    <input type="text" class="comment" name="content" placeholder="댓글달기">
+  </form>
