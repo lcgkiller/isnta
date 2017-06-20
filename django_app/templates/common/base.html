@@ -23,6 +23,12 @@
 	<title>Instagram</title>
 </head>
 <body>
+	{% if messages %}
+	<div class="message"></div>
+		{% for message in messages %}
+		<div>{{ message }}</div>
+		{% endfor %}
+	{% endif %}
 	<div id="wrap">
 		<header class="top-header">
 			<nav>

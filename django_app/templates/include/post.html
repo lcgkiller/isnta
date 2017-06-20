@@ -1,5 +1,5 @@
 {% load static %}
-<article class="post">
+<article id="post-{{ post.pk }}" class="post">
     <header class="post-header">
         <div class="post-header-left">
             <a href="#"><img class="circle-user-img" src="{% static 'images/unknown.jpg' %}" alt=""></a>
@@ -17,7 +17,9 @@
                 <a href="{% url 'posts:post_detail' post.pk %}"> DETAIL </a>
                 {% if user == post.author %}
                 <a href="{% url 'posts:post_modify' post.pk %}"> MODIFY </a>
-                <a href="{% url 'posts:post_delete' post.pk %}"> DELETE </a>
+                <a href="{% url 'posts:post_delete' post.pk %}" onclick="return confirm(&quot; 삭제하시겠습니까? &quot;);">
+                  <span class="yes">DELETE</span>
+                 </a>
                 {% endif %}
             </div>
         </div>
@@ -51,7 +53,10 @@
             {% endfor %}
         </div>
         <p class="created">{{ post.created_date }}</p>
-          {% include "comment/comment_create.html" %}
+        <form action="{% url 'posts:comment_create' post_pk=post.pk %}?next={{ request.path }}#post--{{ post.pk }}" method="POST">
+            {% csrf_token %}
+            {{ comment_form.content }}
+        </form>
       </div>
     </div>
 </article>
@@ -61,5 +66,6 @@
         $(this).parent().remove();
         return false;
     });
-});
+    });
+
 </script>

@@ -1,6 +1,0 @@
-  <form action="{% url 'posts:comment_add' post.pk %}" method="POST">
-    {% csrf_token %}
-    <input type="text" class="comment" name="content" placeholder="댓글달기">
-    <input type="hidden" name="scrollx" id="scrollx" value="0" />
-    <input type="hidden" name="scrolly" id="scrolly" value="0" />
-  </form>

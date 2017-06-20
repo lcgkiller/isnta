@@ -12,5 +12,3 @@
 #     file = forms.ImageField(label="사진", required=True)
 #
 #
-# class CommentForm(forms.Form):
-#     comment = forms.TextInput()

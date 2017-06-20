@@ -1,25 +1,35 @@
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.models import User
+from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect, get_object_or_404
-from django.http import HttpResponse, HttpResponseNotFound, HttpResponseRedirect
 from django.urls import reverse
 
 from post.decorators import post_owner
-from .forms.post import PostForm
+from post.forms import CommentForm
+from ..forms import PostForm
+from ..models import Post
 
 User = get_user_model()  # get_user_model : 자동으로 Django에서 인증에 사용되는 User모델클래스를 리턴
 
-# Create your views here.
-from .models import Post
+__all__ = (
+    'post_modify',
+    'post_create',
+    'post_delete',
+    'post_detail',
+    'post_list'
+)
 
 
 def post_list(request):
     # 1. 모든 Post 목록을 'post'라는 key로 context에 담아 return render 처리
     # 2. post/post_list.html을 템플릿으로 사용
+
+    # (0620) 각 포스트에 대해 최대 4개의 댓글을 보여주도록 템플릿에 설정
+    # 각 post 하나당 CommentForm을 하나씩 가지도록 리스트 컴프리헨션 사용
     posts = Post.objects.all()
     context = {
         'posts': posts,
+        'comment_form': CommentForm(),
     }
 
     return render(request, 'post/post_list.html', context)
@@ -87,6 +97,7 @@ def post_create(request):
     }
     return render(request, 'post/post_create.html', context)
 
+
 @post_owner
 @login_required
 def post_modify(request, post_pk):
@@ -100,7 +111,6 @@ def post_modify(request, post_pk):
 
     else:
         form = PostForm(instance=post)
-
     context = {
         'form': form,
     }
@@ -126,35 +136,3 @@ def post_delete(request, post_pk):
     #     elif yes_or_no == "no":
     #         return redirect('posts:post_list')
     # return render(request, 'post/post_delete.html')
-
-
-def comment_create(request, post_pk):
-    # POST 요청을 받아 Comment 객체를 생성 후 post_detail 페이지로 redirect
-
-    if request.method == "POST":
-        content = request.POST.get('content', '')
-        user = User.objects.first()
-        post = Post.objects.get(pk=post_pk)
-        post.add_comment(user, content)
-
-        return redirect('posts:post_list')
-
-
-def comment_delete(request, post_pk, comment_pk):
-    # POST요청을 받아 Comment 객체를 delete, 이후 post_detail 페이지로 redirect
-
-    post = Post.objects.get(pk=post_pk)
-    comment = post.comment_set.get(pk=comment_pk)
-
-    if request.method == "POST":
-        yes_or_no = request.POST.get('delete_yes_or_no')
-        if yes_or_no == "yes":
-            comment.delete()
-            return redirect('posts:post_detail', post_pk)
-
-
-    elif request.method == "GET":
-        context = {
-            'comment': comment
-        }
-        return render(request, 'comment/comment_delete.html', context)

@@ -1,7 +1,7 @@
 {% block contenet %}
 <div class="post-post-delete">
   <p>{{ post.id }}번 게시글을 삭제하시겠습니까?</p>
-    <form action="{% url 'posts:post_delete' post.id %}" method="POST" >
+    <form action="{% url 'posts:post_detail' post.id %}" method="POST" >
       {% csrf_token %}
         <button type="submit" name="delete_yes_or_no" value="yes">예</button>
         <button type="submit" name="delete_yes_or_no" value="no">아니요</button>

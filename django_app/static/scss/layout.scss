@@ -103,3 +103,16 @@ form.form-inline-login {
 
   }
 }
+
+
+.message {
+  position : fixed;
+  width : 80%;
+  left : 10%;
+  top : 5%;
+  padding : 20px;
+  border : 1px solid $color-border;
+  background-color: rgba(255, 255, 255, 0.5);
+  font-size : 15px;
+  text-align : center;
+}
