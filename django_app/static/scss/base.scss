@@ -45,6 +45,10 @@ ul, ol {
   list-style-type: none;
 }
 
+li {
+  display: inline;
+}
+
 .test {
   padding : 10px;
   color: white;
@@ -52,5 +56,13 @@ ul, ol {
   font-size: 14px;
 }
 
+.pagination {
+  margin : 0 auto;
+  text-align: center;
 
+   > * {
+    margin : 0 auto;
+    text-align: center;
+  }
+}
 //  0619 clearfix

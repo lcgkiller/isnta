@@ -24,6 +24,7 @@
     color : red;
     font-weight : bold;
     padding-left: 5px;
+    z-index: 0;
   }
   label {
     font-size: 11px;
@@ -42,6 +43,6 @@
   }
 }
 
-.comment {
-  margin-bottom : 20px;
+a.hash-tag {
+  color: $color-tag;
 }

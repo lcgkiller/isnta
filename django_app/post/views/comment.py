@@ -72,10 +72,10 @@ def comment_modify(request, comment_pk):
 @comment_owner
 @require_POST
 @login_required
-def comment_delete(request, post_pk, comment_pk):
+def comment_delete(request, comment_pk):
     # comment_delete 이후에 원래 페이지로 돌아갈 수 있도록 처리해보기
     comment = get_object_or_404(Comment, pk=comment_pk)
     post = comment.post
     comment.delete()
-    return redirect('posts:post_detail', post_pk=post.pk)
+    return redirect('posts:post_list')
 

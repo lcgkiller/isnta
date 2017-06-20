@@ -1,7 +1,0 @@
-<div class="post-comment"> {% if style == 'red' %} style="color: red;"{% endif %}
-    <a href="#" class="comment-author">{{ comment.author }}</a>
-    <a href="{% url 'posts:comment_delete' comment.post.pk comment.pk %}" class="comment-tag">
-        <span class="comment-content" >{{ comment.content }}</span>
-        <span class="delete">delete</span>
-    </a>
-</div>

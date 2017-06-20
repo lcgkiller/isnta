@@ -1,9 +1,13 @@
-<div class="post-comment"> {% if style == 'red' %} style="color: red;"{% endif %}
+<div class="post-comment">
     <a href="#" class="comment-author">{{ comment.author }}</a>
-    <span class="comment-content" >{{ comment.content }}</span>
-    <a href="" class="comment-tag"></a>
+    <p class="comment-content">{{ comment.html_content|safe }}</p>
     {% if request.user == comment.author %}
-    <a href="{% url 'posts:comment_delete' comment_pk=comment.pk %}" class="btn btn-xs">삭제</a>
-    <a href="{% url 'posts:comment_modify' comment_pk=comment.pk %}?next={{ request.path }}#post-{{ comment.pst.pk }}" class="btn btn-xs">수정</a>
+    <a href="{% url 'posts:comment_modify' comment_pk=comment.pk %}?next={{ request.path }}#post-{{ comment.post.pk }}" class="btn btn-xs">수정</a>
+
+    <form action="{% url 'posts:comment_delete' comment_pk=comment.pk %}?next={{ request.path }}#post-{{ comment.post.pk }}" method="POST" class="form-inline">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-xs">삭제</button>
+    </form>
     {% endif %}
 </div>
+

@@ -8,72 +8,75 @@
 <!doctype html>
 <html lang="ko">
 <head>
-	<meta charset="UTF-8">
-	<meta name="viewport"
-	      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-	<meta http-equiv="X-UA-Compatible" content="ie=edge">
-	<link rel="stylesheet" href="{% static 'css/normalize.css' %}">
-	<link rel="stylesheet" href="{% static 'css/base.css' %}">
-	<link rel="stylesheet" href="{% static 'css/layout.css' %}">
-	<link rel="stylesheet" href="{% static 'css/post.css' %}">
-	<link rel="stylesheet" href="{% static 'css/common.css' %}">
-	<meta http-equiv="refresh" content="72">
-	<meta http-equiv="Pragma" CONTENT="no-cache">
-	<meta http-equiv="Expires" CONTENT="-1">
-	<title>Instagram</title>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="{% static 'css/normalize.css' %}">
+    <link rel="stylesheet" href="{% static 'css/base.css' %}">
+    <link rel="stylesheet" href="{% static 'css/layout.css' %}">
+    <link rel="stylesheet" href="{% static 'css/post.css' %}">
+    <link rel="stylesheet" href="{% static 'css/common.css' %}">
+    <title>Instagram</title>
 </head>
 <body>
-	{% if messages %}
-	<div class="message"></div>
-		{% for message in messages %}
-		<div>{{ message }}</div>
-		{% endfor %}
-	{% endif %}
-	<div id="wrap">
-		<header class="top-header">
-			<nav>
-				<div class="nav-left nav-item">
-					<a href="{% url 'posts:post_list' %}">
-						<img src="{% static 'images/logo.png' %}" alt="">
-					</a>
-				</div>
-				<div class="nav-center nav-item">
-					<input type="text" placeholder="검색">
-				</div>
-				<div class="nav-right nav-item">
-					<a href="#">
-						<img src="{% static 'images/icon_explore.png' %}" alt="">
-					</a>
-					<a href="#">
-						<img src="{% static 'images/icon_heart.png' %}" alt="">
-					</a>
-					<a href="#">
-						<img src="{% static 'images/icon_profile.png' %}" alt="">
-					</a>
-				</div>
-			</nav>
-			<nav>
-				<div>
-					{% if user.is_authenticated %}
-					<span>{{ user }}님이 로그인중입니다.</span>
-						<a href="{% url 'member:logout' %}" class="btn">로그아웃</a>
-					{% else %}
-					<form action="{% url 'member:login' %}" method="POST" class="form-inline-login">
-						{% csrf_token %}
-                        {{ login_form }}
-						<button type="submit" class="btn">로그인</button>
-						<a href="{% url 'member:signup' %}" class="btn">회원가입</a>
+{% if messages %}
+<div class="message">
+    {% for message in messages %}
+    <div>{{ message }}</div>
+    {% endfor %}
+    {% endif %}
+</div>
+<div id="wrap">
+    <header class="top-header">
+        <nav>
+            <div class="nav-left nav-item">
+                <a href="{% url 'posts:post_list' %}">
+                    <img src="{% static 'images/logo.png' %}" alt="">
+                </a>
+            </div>
+            <div class="nav-center nav-item">
+                <input type="text" placeholder="검색">
+            </div>
+            <div class="nav-right nav-item">
+                <a href="#">
+                    <img src="{% static 'images/icon_explore.png' %}" alt="">
+                </a>
+                <a href="#">
+                    <img src="{% static 'images/icon_heart.png' %}" alt="">
+                </a>
+                <a href="#">
+                    <img src="{% static 'images/icon_profile.png' %}" alt="">
+                </a>
+            </div>
+        </nav>
+        <nav>
+            <div>
+                {% if user.is_authenticated %}
+                <span>{{ user }}님이 로그인중입니다.</span>
+                <a href="{% url 'member:logout' %}" class="btn">로그아웃</a>
+                {% else %}
+                <form action="{% url 'member:login' %}" method="POST" class="form-inline-login">
+                    {% csrf_token %}
+                    {{ login_form }}
+                    <button type="submit" class="btn">로그인</button>
+                    <a href="{% url 'member:signup' %}" class="btn">회원가입</a>
+                </form>
+                {% endif %}
+            </div>
+        </nav>
+    </header>
 
-					</form>
-					{% endif %}
-				</div>
-			</nav>
-		</header>
-			<div class="container">
-				{% block content %}
-				{% endblock %}
-			</div>
-		</div>
+    <div class="container">
+        {% block content %}
+        {% endblock %}
+
+    </div>
+
+</div>
+
+</body>
+</html>
 
 <script src="https://code.jquery.com/jquery-3.1.0.min.js"></script>
 <script type="text/javascript">
@@ -98,6 +101,5 @@ $(document).ready(function() {
 });
 
 
+
 </script>
-</body>
-</html>

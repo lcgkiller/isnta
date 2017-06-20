@@ -1,7 +1,18 @@
 {% extends 'common/base.html' %}
+
 {% block content %}
-    <p>{{ comment.content }}</p><br>
-    <p>해당 댓글을 지우시겠습니까?</p>
- <form action="{% url 'posts:comment_delete' comment.id %}" method="POST" >{% csrf_token %}
- </form>
+{% comment %}
+	template안에서 request.GET의 내용을 쓰는 법
+	{{ request.GET.[key] }}
+{% endcomment %}
+
+<div class="content">
+	<h3>Comment modify</h3>
+	<form action="" method="POST">
+		{% csrf_token %}
+		{% include 'include/field_set.html' %}
+		<button type="submit" class="btn">삭제</button>
+	</form>
+</div>
 {% endblock %}
+

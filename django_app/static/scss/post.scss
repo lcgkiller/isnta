@@ -116,6 +116,10 @@ article.post {
 }
 div.post-comment-container{
 
+  .post-comment > * {
+    display: inline;
+    vertical-align: middle;
+  }
   .comment-author{
     color: #262636;
     text-decoration: none;
@@ -164,6 +168,7 @@ p.created {
   margin-bottom : 3px;
   margin-top : 3px;
 }
+
 input.comment {
   width : 80%;
   box-sizing: border-box;
@@ -179,4 +184,9 @@ input.comment {
     width: 100%;
     clear: both;
   }
+}
+
+// 제일 하단 pagination
+.current {
+  margin : 10px 5px;
 }

@@ -1,11 +1,14 @@
 {% extends 'common/base.html' %}
+
 {% block content %}
 <h1> post_modify 페이지 </h1>
+<div class="content">
 <p>{{ form.instance.post.id }}번 게시글을 수정하시겠습니까?</p>
-<form action="" method="post" enctype="multipart/form-data" >{% csrf_token %}
-    <img src="{{ form.instance.photo.url }}" alt="" width="200">
-    {% include 'include/field_set.html' %}
-    <button type="submit" name="modify" value="yes">수정</button>
-</form>
-<p><a href="{% url 'posts:post_list' %}">돌아가기</a></p>
+    <form action="" method="post" enctype="multipart/form-data" >{% csrf_token %}
+        <img src="{{ form.instance.photo.url }}" alt="" width="200">
+        {% include 'include/field_set.html' %}
+        <button type="submit" class="btn">등록</button>
+    </form>
+    <p><a href="{% url 'posts:post_list' %}">돌아가기</a></p>
+</div>
 {% endblock %}

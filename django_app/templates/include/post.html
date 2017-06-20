@@ -18,18 +18,17 @@
                 {% if user == post.author %}
                 <a href="{% url 'posts:post_modify' post.pk %}"> MODIFY </a>
                 <a href="{% url 'posts:post_delete' post.pk %}" onclick="return confirm(&quot; 삭제하시겠습니까? &quot;);">
-                  <span class="yes">DELETE</span>
-                 </a>
+                    <span class="yes">DELETE</span>
+                </a>
                 {% endif %}
             </div>
         </div>
         {% else %}
-            <img src="{{ post.photo.url }}" alt="">
+        <img src="{{ post.photo.url }}" alt="">
         {% endif %}
     </div>
-    <div class="post-content-container">
     <div class="post-bottom">
-      <div class="post-btn-container">
+        <div class="post-btn-container">
             <a href="">
                 <img src="{% static 'images/post_comment.png' %}" alt="">
             </a>
@@ -37,21 +36,61 @@
                 <img src="{% static 'images/post_heart.png' %}" alt="">
             </a>
         </div>
-        <div class="post-like">
-          <p class="comment">좋아요 {{ post.like_count }}개</p>
-        </div>
+        <p class="comment">좋아요 {{ post.like_count }}개</p>
         <div class="post-comment-container">
-            <!--post에 연결된 Comment 목록을 for문으로 순회-->
+            <!--해당 post에 my_comment가 있을 경우 표시-->
+            {% if post.my_comment %}
+            <!--include한 post_comment내에서 'comment'라는 이름으로 쓸 변수에는 post.my_comment를 할당-->
+                {% include 'include/post_comment.html' with comment=post.my_comment style='red' %}
+            {% endif %}
+
+            <!--post에 연결된 Comment목록을 for문으로 순회하며 아래의 div.post-comment를 반복-->
             {% for comment in post.comment_set.all %}
-                {% include 'include/post_comment.html' %}
+                {% if comment != post.my_comment %}
+                    <!--
+                      include한 post_comment내에서 이미 'comment'라는 이름을 사용중이며
+                      for문에서 사용하는 각 loop의 아이템 이름 'comment'와 일치
+                    -->
+                    {% include 'include/post_comment.html' %}
+                {% endif %}
             {% endfor %}
+        </div>
         <p class="created">{{ post.created_date }}</p>
-        <form action="{% url 'posts:comment_create' post_pk=post.pk %}?next={{ request.path }}#post--{{ post.pk }}" method="POST">
+        <form action="{% url 'posts:comment_create' post_pk=post.pk %}?next={{ request.path }}#post-{{ post.pk }}"
+              method="POST">
             {% csrf_token %}
             {{ comment_form.content }}
         </form>
-      </div>
     </div>
+</div>
+   <div class="pagination">
+    {% if posts.number != 1 %}
+        <li><a href="?page={{ 1 }}" class="btn">첫 페이지</a></li>
+    {% endif %}
+    {% if posts.has_previous %}
+        <a href="?page={{ posts.previous_page_number }}" class="btn">이전 페이지</a>
+    {% endif %}
+
+    {% for page in page_range %}
+        {% if posts.number == page %}
+            <li><a href="?page={{ page }}" class="btn">{{ page }}</a></li>
+        {% else %}
+            <li><a href="?page={{ page }}" class="btn">{{ page }}</a></li>
+        {% endif %}
+    {% endfor %}
+
+    {% if posts.has_next %}
+        <a href="?page={{ posts.next_page_number }}" class="btn">다음 페이지</a>
+    {% endif %}
+    {% if posts.number != page.end_index %}
+        <li><a href="?page={{ posts.paginator.num_pages }}" class="btn">끝 페이지</a></li>
+    {% endif %}
+    <div class="current">
+        Page {{ posts.number }} of {{ posts.paginator.num_pages }}
+    </div>
+    </div>
+
+
 </article>
 <script>
     $(document).ready(function(){
@@ -60,5 +99,4 @@
         return false;
     });
     });
-
 </script>

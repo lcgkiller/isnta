@@ -4,6 +4,7 @@
         <a href="{% url 'posts:post_create' %}" class="btn">게시글 작성하기</a>
     </div>
     {% for post in posts %}
-      {% include 'include/post.html' with type='list' %}
+        {% include 'include/post.html' with type='list' %}
     {% endfor %}
+
 {% endblock %}
