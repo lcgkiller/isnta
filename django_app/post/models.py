@@ -70,8 +70,7 @@ class Comment(models.Model):
 
     def make_html_content_and_add_tags(self):
         # ex) 주말경기 #축구 #야구 인스타
-        #   --> '주말경기 <a href='#'>축구</a><a href='#'>야구</a> 인스타
-        # 해당내용을 self.html_content에 대입
+        #   --> "주말경기 <a href='#'>축구</a><a href='#'>야구</a> 인스타" 이런 식으로 self.html_content에 대입
 
         # 해시태그에 해당하는 정규표현식
         p = re.compile(r'(#\w+)')
@@ -87,6 +86,9 @@ class Comment(models.Model):
                 url=reverse('posts:hashtag_post_list', kwargs={'tag_name': tag_name.replace('#', '')}),
                 tag_name=tag_name
             )
+
+            # re.sub(pattern, replace, string)
+            # 부정형 전방탐색(?!) : 일치 영역을 발견해도 값을 반환하지 않음.
             ori_content = re.sub(r'{}(?![<\w])'.format(tag_name), change_tag, ori_content, count=1)
 
             if not self.tags.filter(pk=tag.pk).exists():

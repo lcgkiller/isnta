@@ -23,7 +23,7 @@ __all__ = (
 )
 
 
-def post_list(request):
+def post_list_original(request):
     # 1. 모든 Post 목록을 'post'라는 key로 context에 담아 return render 처리
     # 2. post/post_list.html을 템플릿으로 사용
 
@@ -32,11 +32,29 @@ def post_list(request):
     #       한 번에 10개씩만 표시하도록 수정
     #       https://docs.djangoproject.com/en/1.11/topics/pagination/
     # 2. 좋아요 버튼 구현 및 좋아요 한 사람 목록 출력
-    posts_list = Post.objects.all()
+
+    posts = Post.objects.all()
+
+    context = {
+        'posts': posts,
+        'comment_form': CommentForm(),
+    }
+
+    return render(request, 'post/post_list.html', context)
+
+
+def post_list(request):
+    # (0621) 위 post_list_original() 함수뷰에서 posts가 Paginator를 통해 5개씩 출력하도록 수정
+
+    # 전체 Post 목록 QuerySet생성 (아직 평가되지 않은 상태)
+    all_posts = Post.objects.all()
+
+    # GET 파라미터에서 'page'값을 page_num 변수에 할당 (1. 오브젝트, 2. 개당 출력 갯수)
+    paginator = Paginator(all_posts, 2)
     page = request.GET.get('page', 1)
-    paginator = Paginator(posts_list, 1)
 
     try:
+        # Page형 오브제트를 돌려준다.
         posts = paginator.page(page)
     except PageNotAnInteger:
         posts = paginator.page(1)
@@ -48,15 +66,13 @@ def post_list(request):
     start_index = index - 3 if index >= 3 else 0
     end_index = index + 3 if index <= max_index - 3 else max_index
     page_range = paginator.page_range[start_index:end_index]
-
     context = {
         'posts': posts,
-        'comment_form': CommentForm(),
         'page_range': page_range,
+        'comment_form': CommentForm(),
     }
 
     return render(request, 'post/post_list.html', context)
-
 
 # 숙제
 def post_detail(request, post_pk):
@@ -194,9 +210,27 @@ def hashtag_post_list(request, tag_name):
     posts = Post.objects.filter(my_comment__tags=tag)
     posts_count = posts.count()
 
-    context ={
+    page = request.GET.get('page', 1)
+    paginator = Paginator(posts, 3)
+
+    try:
+        pages = paginator.page(page)
+    except PageNotAnInteger:
+        pages = paginator(1)
+    except EmptyPage:
+        pages = paginator.page(paginator.num_pages)
+
+    index = pages.number - 1
+    max_index = len(paginator.page_range)
+    start_index = index - 3 if index >= 3 else 0
+    end_index = index + 3 if index <= max_index - 3 else max_index
+    page_range = paginator.page_range[start_index:end_index]
+
+    context = {
         'tag': tag,
         'posts': posts,
         'posts_count': posts_count,
+        'pages': pages,
+        'page_range': page_range
     }
     return render(request, 'post/hashtag_post_list.html', context)

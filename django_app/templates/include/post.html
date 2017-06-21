@@ -63,32 +63,7 @@
         </form>
     </div>
 </div>
-   <div class="pagination">
-    {% if posts.number != 1 %}
-        <li><a href="?page={{ 1 }}" class="btn">첫 페이지</a></li>
-    {% endif %}
-    {% if posts.has_previous %}
-        <a href="?page={{ posts.previous_page_number }}" class="btn">이전 페이지</a>
-    {% endif %}
 
-    {% for page in page_range %}
-        {% if posts.number == page %}
-            <li><a href="?page={{ page }}" class="btn">{{ page }}</a></li>
-        {% else %}
-            <li><a href="?page={{ page }}" class="btn">{{ page }}</a></li>
-        {% endif %}
-    {% endfor %}
-
-    {% if posts.has_next %}
-        <a href="?page={{ posts.next_page_number }}" class="btn">다음 페이지</a>
-    {% endif %}
-    {% if posts.number != page.end_index %}
-        <li><a href="?page={{ posts.paginator.num_pages }}" class="btn">끝 페이지</a></li>
-    {% endif %}
-    <div class="current">
-        Page {{ posts.number }} of {{ posts.paginator.num_pages }}
-    </div>
-    </div>
 
 
 </article>
