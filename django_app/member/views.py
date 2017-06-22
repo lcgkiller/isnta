@@ -121,7 +121,7 @@ def profile(request, user_pk=None):
         int로 변환 불가능한 경우, except처리
         1보다 작은값일 경우 except 처리 
         오지 않을 경우 page=1로 처리
-        
+            
     3. def follow_toggle(request, user_pk)
       위 함수기반 뷰를 구현
             login_required

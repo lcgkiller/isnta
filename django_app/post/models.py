@@ -7,7 +7,6 @@ member application 생성
 from django.conf import settings
 from django.db import models
 import re
-from django.contrib.auth.models import User
 
 
 # Create your models here.

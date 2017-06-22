@@ -128,4 +128,3 @@ class Relation(models.Model):
         # lhy.follow_relations.create(to_user="박보영")
         # Relation.objects.create(from_user=lhy, to_user="박보영")은 같은 의미.
 
-#

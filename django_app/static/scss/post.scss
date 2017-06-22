@@ -107,12 +107,18 @@ article.post {
        vertical-align: baseline;
        margin-bottom : 8px;
      }
+
+
   }
 
   .post-content-container{
     padding-left : 5px;
     margin-left : 10px;
   }
+}
+
+div.post-btn-container > *{
+  display : inline;
 }
 div.post-comment-container{
 
