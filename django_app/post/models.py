@@ -25,6 +25,7 @@ class Post(models.Model):
         null=True,
         related_name='+'
     )  # Post 작성시 내용 (+는 역참조가 없음을 의미)
+
     like_users = models.ManyToManyField(
         settings.AUTH_USER_MODEL,
         related_name='like_posts',

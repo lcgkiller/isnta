@@ -12,7 +12,7 @@ urlpatterns = [
     url(r'^modify/(?P<post_pk>[0-9]+)/$', views.post_modify, name='post_modify'),
 
     # 좋아요
-    # url(r'^like/(?P<post_pk>[0-9]+)/$', views.post_like, name='post_like'),
+    url(r'^(?P<post_pk>[0-9]+)/like-toggle/$', views.post_like_toggle, name='post_like_toggle'),
 
     # comment
     url(r'^(?P<post_pk>[0-9]+)/comment/create/$', views.comment_create, name='comment_create'),

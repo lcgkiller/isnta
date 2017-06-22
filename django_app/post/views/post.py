@@ -3,6 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
+from django.views.decorators.http import require_POST
 
 from post.decorators import post_owner
 from post.forms import CommentForm
@@ -20,6 +21,7 @@ __all__ = (
     'post_detail',
     'post_list',
     'hashtag_post_list',
+    'post_like_toggle',
 )
 
 
@@ -73,44 +75,6 @@ def post_list(request):
     }
 
     return render(request, 'post/post_list.html', context)
-
-
-def post_like(request, post_pk):
-    post = get_object_or_404(Post, pk=post_pk)
-    post_id = post.pk
-    liked = False
-    if request.session.get('has_liked_'+str(post_id), liked):
-        liked = True
-        print("linked {}_{}".format(liked, post_id))
-    context = {
-        'post': post,
-        'liked': liked
-    }
-    return render(request, 'post/post_list.html', context)
-
-
-def like_count_post(request):
-    liked = False
-    if request.method == 'GET':
-        post_id = request.GET['post_id']
-        post = Post.objects.get(id=int(post_id))
-        if request.session.get('has_liked_'+post_id, liked):
-            print("unlike")
-            if post.likes > 0:
-                likes = post.likes - 1
-                try:
-                    del request.session['has_liked_'+post_id]
-                except KeyError:
-                    print("keyerror")
-
-        else:
-            print("like")
-            request.session['has_liked_'+post_id] = True
-            likes = post.likes + 1
-
-    post.likes = likes
-    post.save()
-    return HttpResponse(likes, liked)
 
 
 # 숙제
@@ -209,17 +173,45 @@ def post_delete(request, post_pk):
             'post': post,
         }
         return render(request, 'post/post_delete.html', context)
-    # if request.method == "POST":
-    #     yes_or_no = request.POST.get('delete_yes_or_no')
-    #     print("말해 :", yes_or_no)
-    #
-    #     if yes_or_no == "yes":
-    #         post.delete()
-    #         return redirect('posts:post_list')
-    #
-    #     elif yes_or_no == "no":
-    #         return redirect('posts:post_list')
-    # return render(request, 'post/post_delete.html')
+        # if request.method == "POST":
+        #     yes_or_no = request.POST.get('delete_yes_or_no')
+        #     print("말해 :", yes_or_no)
+        #
+        #     if yes_or_no == "yes":
+        #         post.delete()
+        #         return redirect('posts:post_list')
+        #
+        #     elif yes_or_no == "no":
+        #         return redirect('posts:post_list')
+        # return render(request, 'post/post_delete.html')
+
+@require_POST
+@login_required
+def post_like_toggle(request, post_pk):
+    # 1. post_pk에 해당하는 Post instance를 변수(post)에 할당
+    post = get_object_or_404(Post, pk=post_pk)
+
+    # 2. post에서 PostLike로의 RelatedManager를 사용해서 post 속성이 post, user속성이 request.user인 PostLike가 있는지 get_or_create
+    #   만약, M2M필드가 중간자모델을 거치지 않을 경우
+    # if request.user not in post.like_users:
+    #     post.list_users.add(request.user)
+
+    # 중간자 모델을 사용할 경우, get_or_create를 사용해서 현재 Post와 request.user에 해당하는 PostLike 인스턴스를 가져옴
+    post_like, post_like_created = post.postlike_set.get_or_create(
+        user=request.user,
+    )
+
+    # 3. 이후 create 여부에 따라 해당 PostLike인스턴스를 삭제 또는 그냥 넘어가기
+    # post_like_created가 get_or_create를 통해 새로운 PostLike가 만들어졌는지, 아니면 기존에 있었는지 여부를 나타냄
+    if not post_like_created:
+        # 기존에 PostLike가 있었따면 삭제한다.
+        post_like.delete()
+
+    # 4. 리턴주소가 next가 주어질 경우 next, 아닐 경우 post_detail로
+    next = request.GET.get('next')
+    if next:
+        return redirect(next)
+    return redirect('posts:post_detail', post_pk=post.pk)
 
 
 def hashtag_post_list(request, tag_name):
