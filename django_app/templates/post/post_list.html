@@ -1,5 +1,10 @@
 {% extends 'common/base.html' %}
+<!--utils 패키지에 templatetags.custom_tags를 가리킨다.-->
+{% load custom_tags %}
 {% block content %}
+
+<div class="test">{{ request.GET|query_string }}</div>
+
     <div class="post post-create">
         <a href="{% url 'posts:post_create' %}" class="btn">게시글 작성하기</a>
     </div>
@@ -7,53 +12,45 @@
         {% include 'include/post.html' with type='list' %}
     {% endfor %}
 
-<div class="test">FULL URL : {{ request.get_full_path }}</div>
-<div class="test">request.GET : {{ request.GET }}</div>
-<div class="test">
-    {% for k, v_list in request.GET.lists %}
-        {% for v in v_list %}
-        <span>&{{ k }}={{ v }}</span>
-        {% endfor %}
-    {% endfor %}
-</div>
 
   <div class="pagination">
-      {% if posts.has_previous %}
-      <a href="{{ request.path }}?page={{ 1 }}" class="btn">첫 페이지</a>
-      <a href="{{ request.path }}?page={{ posts.previous_page_number }}" class="btn">이전({{ posts.previous_page_number }})</a>
-      {% endif %}
-      <a href="">현재 페이지 : {{ posts.number }}</a>
-      {% if posts.has_next %}
-      <a href="?page={{ posts.next_page_number }}" class="btn">다음({{ posts.next_page_number }})</a>
-      <a href="?page={{ posts.paginator.num_pages }}" class="btn">끝 페이지</a>
-      {% endif %}
-  </div>
+      <!--0621 수업 진행내용 -->
+      <!--{% if posts.has_previous %}-->
+      <!--<a href="{{ request.path }}?page={{ 1 }}" class="btn">첫 페이지</a>-->
+      <!--<a href="{{ request.path }}?page={{ posts.previous_page_number }}" class="btn">이전({{ posts.previous_page_number }})</a>-->
+      <!--{% endif %}-->
+      <!--<a href="">현재 페이지 : {{ posts.number }}</a>-->
+      <!--{% if posts.has_next %}-->
+      <!--<a href="?page={{ posts.next_page_number }}" class="btn">다음({{ posts.next_page_number }})</a>-->
+      <!--<a href="?page={{ posts.paginator.num_pages }}" class="btn">끝 페이지</a>-->
+      <!--{% endif %}-->
+      <!--</div>-->
 
 
-    <!--{% if posts.number != 1 %}-->
-        <!--<li><a href="?page={{ 1 }}" class="btn">첫 페이지</a></li>-->
-    <!--{% endif %}-->
-    <!--{% if posts.has_previous %}-->
-        <!--<a href="?page={{ posts.previous_page_number }}" class="btn">이전 페이지</a>-->
-    <!--{% endif %}-->
+    {% if posts.number != 1 %}
+        <li><a href="?page={{ 1 }}" class="btn">첫 페이지</a></li>
+    {% endif %}
+    {% if posts.has_previous %}
+        <a href="?page={{ posts.previous_page_number }}" class="btn">이전 페이지</a>
+    {% endif %}
 
-    <!--{% for page in page_range %}-->
-        <!--{% if posts.number == page %}-->
-            <!--<li><a href="?page={{ page }}" class="btn">{{ page }}</a></li>-->
-        <!--{% else %}-->
-            <!--<li><a href="?page={{ page }}" class="btn">{{ page }}</a></li>-->
-        <!--{% endif %}-->
-    <!--{% endfor %}-->
+    {% for page in page_range %}
+        {% if posts.number == page %}
+            <li><a href="?page={{ page }}" class="btn">{{ page }}</a></li>
+        {% else %}
+            <li><a href="?page={{ page }}" class="btn">{{ page }}</a></li>
+        {% endif %}
+    {% endfor %}
 
-    <!--{% if posts.has_next %}-->
-        <!--<a href="?page={{ posts.next_page_number }}" class="btn">다음 페이지</a>-->
-        <!--&lt;!&ndash;<a href="?page={{ posts.paginator.num_pages }}" class="btn">끝 페이지</a></li>&ndash;&gt;-->
-    <!--{% endif %}-->
-    <!--{% if posts.number != posts.paginator.num_pages %}-->
-        <!--<li><a href="?page={{ posts.paginator.num_pages }}" class="btn">끝 페이지</a></li>-->
-    <!--{% endif %}-->
-    <!--<div class="current">-->
-        <!--Page {{ posts.number }} of {{ posts.paginator.num_pages }}-->
-    <!--</div>-->
+    {% if posts.has_next %}
+        <a href="?page={{ posts.next_page_number }}" class="btn">다음 페이지</a>
+        <!--<a href="?page={{ posts.paginator.num_pages }}" class="btn">끝 페이지</a></li>-->
+    {% endif %}
+    {% if posts.number != posts.paginator.num_pages %}
+        <li><a href="?page={{ posts.paginator.num_pages }}" class="btn">끝 페이지</a></li>
+    {% endif %}
+    <div class="current">
+        Page {{ posts.number }} of {{ posts.paginator.num_pages }}
+    </div>
     </div>
 {% endblock %}

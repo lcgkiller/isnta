@@ -1,6 +1,6 @@
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 
@@ -73,6 +73,45 @@ def post_list(request):
     }
 
     return render(request, 'post/post_list.html', context)
+
+
+def post_like(request, post_pk):
+    post = get_object_or_404(Post, pk=post_pk)
+    post_id = post.pk
+    liked = False
+    if request.session.get('has_liked_'+str(post_id), liked):
+        liked = True
+        print("linked {}_{}".format(liked, post_id))
+    context = {
+        'post': post,
+        'liked': liked
+    }
+    return render(request, 'post/post_list.html', context)
+
+
+def like_count_post(request):
+    liked = False
+    if request.method == 'GET':
+        post_id = request.GET['post_id']
+        post = Post.objects.get(id=int(post_id))
+        if request.session.get('has_liked_'+post_id, liked):
+            print("unlike")
+            if post.likes > 0:
+                likes = post.likes - 1
+                try:
+                    del request.session['has_liked_'+post_id]
+                except KeyError:
+                    print("keyerror")
+
+        else:
+            print("like")
+            request.session['has_liked_'+post_id] = True
+            likes = post.likes + 1
+
+    post.likes = likes
+    post.save()
+    return HttpResponse(likes, liked)
+
 
 # 숙제
 def post_detail(request, post_pk):

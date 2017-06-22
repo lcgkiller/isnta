@@ -75,6 +75,7 @@ INSTALLED_APPS = [
 
     'post',
     'member',
+    'utils',
 ]
 
 MIDDLEWARE = [
