@@ -80,13 +80,13 @@ class User(AbstractUser):
     def following(self):
         relations = self.follow_relations.all()
         # __in은 쿼리셋 (?)
-        return User.objects.filter(pk__in=relations.values('pk'))
+        return User.objects.filter(pk__in=relations.values('to_user'))
 
     @property
     def followers(self):
         relations = self.follower_relations.all()
         # __in은 쿼리셋 (?)
-        return User.objects.filter(pk__in=relations.values('pk'))
+        return User.objects.filter(pk__in=relations.values('from_user'))
 
 
 

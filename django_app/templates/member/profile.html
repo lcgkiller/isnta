@@ -1,0 +1,36 @@
+{% extends 'common/base.html' %}
+
+{% block content %}
+
+<div class="content">
+    <h3>{{ cur_user }}</h3>
+
+    {% if user != cur_user %}
+        {% if cur_user in user.following %}
+        <button type="submit" class="btn">팔로우 취소</button>
+        {% else %}
+        <button type="submit" class="btn">팔로우</button>
+        {% endif %}
+    {% endif %}
+
+    <h5>Following</h5>
+    {% for u in cur_user.following %}
+        <div>
+            <!-- 해당 User의 Profile로 갈 수 있는 링크 생성-->
+            <a href="{% url 'member:profile' user_pk=u.pk %}" class="btn">{{ u }}-{{ u.pk }}번</a>
+        </div>
+    {% endfor %}
+
+    <h5>Followers</h5>
+    {% for u in cur_user.followers %}
+        <a href="{% url 'member:profile' user_pk=u.pk %}" class="btn">{{ u }}</a>
+    {% endfor %}
+
+</div>
+
+
+<!--<div>cur_user.following : {{ user_following }}</div>-->
+<!--<div>cur_user.follwers : {{ user_follower }}</div>-->
+
+{% endblock %}
+
