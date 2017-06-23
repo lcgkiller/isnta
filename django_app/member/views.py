@@ -5,6 +5,7 @@ from django.contrib.auth import \
     logout as django_logout
 from django.views.decorators.http import require_POST
 
+from member.forms.user import UserEditForm
 from .forms import LoginForm
 from .forms import SignupForm
 
@@ -231,13 +232,34 @@ def follow_toggle(request, user_pk):
     return redirect('member:profile', user_pk=user_pk)
 
 
-class CustomException(Exception):
-    def __init__(self, value):
-        self.value = value
+@login_required
+def profile_edit(request):
+    """
+    request.method == "POST"일 때 nickname과 img_profile(필드도 모델에 추가)을 수정할
+    UserEditForm을 구성 (ModelForm 상속) 
+    
+    1. UserEditForm 구성
+    2. 이 view에서 request method가 GET일떄, 해당 Form에서 request.user에 해당하는 User를 이용해
+    bound form을 만듬.
+    3. POST 요청일 때, 받은 데이터를 이용해 Form에 bind된 User Instance를 업데이트 
+    """
 
-    def __str__(self):
-        return self.value
+    if request.method == "POST":
+        form = UserEditForm(
+            data=request.POST,
+            files=request.FILES,
+            instance=request.user
+        )
+        if form.is_valid():
+            form.save()
+            return redirect('member:profile_edit')
 
+    else:
+        form = UserEditForm(instance=request.user)
+    context = {
+        'form': form,
+    }
+    return render(request, 'member/profile_edit.html', context)
 
 
 

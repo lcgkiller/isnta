@@ -4,6 +4,8 @@ from django.contrib.auth.models import AbstractUser
 # Create your models here.
 from django.db import models
 
+from utils.fields import CustomImageField
+
 
 class User(AbstractUser):
     """
@@ -22,6 +24,14 @@ class User(AbstractUser):
     없음 : 내가 follow하고 있는 사람 1명
     """
     nickname = models.CharField(max_length=24, null=True, unique=True)
+
+    # (0623) 커스텀 이미지 필드로 바꿈
+    profile_image = CustomImageField(
+        upload_to='user',
+        blank=True,
+        # default_static_image='', # 디폴트값일때 넣어주는 이미지, 실제로는 FileField에는 이 키워드인자가 없다.
+                                 # 따라서, utils/custom_imagefiled.py에서 CustomImageField를 오버라이드해준다.
+    )
 
     # (0622)
     relations = models.ManyToManyField(

@@ -1,20 +1,32 @@
 {% extends 'common/base.html' %}
-
+{% load static %}
 {% block content %}
 
-<div class="content">
-    <h3>{{ cur_user }}</h3>
+<div class="content profile">
+    <!--nickname, image_profile 구현-->
 
-    {% if user != cur_user %}
-         <form action="{% url 'member:follow_toggle' user_pk=cur_user.pk %}" method="POST">
-            {% csrf_token %}
-            {% if cur_user in user.following %}
-                <button type="submit" class="btn">팔로우 취소</button>
-            {% else %}
-                <button type="submit" class="btn">팔로우</button>
-            {% endif %}
-            </form>
+    <h3>{{ cur_user }}</h3>
+    <div class="profile-image">
+    <a href="#">
+        <img class="circle-user-img" src="{{ cur_user.profile_image.url }}" alt="" width="152px" height="152px">
+    </a>
+    </div>
+
+    {% if user.is_authenticated %}
+        {% if user != cur_user %}
+             <form action="{% url 'member:follow_toggle' user_pk=cur_user.pk %}" method="POST">
+                {% csrf_token %}
+                {% if cur_user in user.following %}
+                    <button type="submit" class="btn">팔로우 취소</button>
+                {% else %}
+                    <button type="submit" class="btn">팔로우</button>
+                {% endif %}
+                </form>
+        {% else %}
+            <a href="{% url 'member:profile_edit' %}" class="btn">프로필 수정하기 </a>
+        {% endif %}
     {% endif %}
+
 
     <h5>Following</h5>
     {% for u in cur_user.following %}

@@ -13,5 +13,8 @@ urlpatterns = [
     url(r'^profile/(?P<user_pk>\d+)/$', views.profile, name='profile'),
 
     # 팔로우 토글
-    url(r'^follow-toggle/(?P<user_pk>\d+)/$', views.follow_toggle, name='follow_toggle')
+    url(r'^follow-toggle/(?P<user_pk>\d+)/$', views.follow_toggle, name='follow_toggle'),
+
+    # 프로필 에딧
+    url(r'^profile/edit/$', views.profile_edit, name='profile_edit')
 ]
