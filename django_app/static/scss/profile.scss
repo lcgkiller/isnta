@@ -1,0 +1,20 @@
+@import 'variables';
+ul.profile-photo-list {
+
+  // 하위요소들이 inline-block속성일 때, width값 외의 공백이 없도록 한다.
+  font-size:  0;
+  margin-left: -10px;
+  margin-right : -10px;
+  li {
+    display : inline-block;
+    width : calc( 100% / 3 );
+    box-sizing: border-box;
+    padding : 10px;
+
+  // 내부의 img는 무조건 가로 (33.333..%)를 꽉채우도록 한다.
+    img{
+      width : 100%;
+      height : 300px;
+    }
+  }
+}

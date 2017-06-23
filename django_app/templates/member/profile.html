@@ -26,11 +26,44 @@
         <a href="{% url 'member:profile' user_pk=u.pk %}" class="btn">{{ u }}</a>
     {% endfor %}
 
+    <ul class="profile-photo-list">
+    {% for post in posts %}
+      <li>
+        <img src="{{ post.photo.url }}" alt="" width="33%" height="300px">
+      </li>
+    {% endfor %}
+    </ul>
+
+    {% if request.GET.page %}
+    <a href="?page={{ request.GET.page|add:1 }}" class="btn btn-primary btn-block">더 읽어들이기</a>
+    {% else %}
+    <a href="?page=2" class="btn btn-primary btn-block">더 읽어들이기</a>
+    {% endif %}
+
+    <div class="pagination">
+        {% if posts.has_previous %}
+            <a href="?page={{ 1 }}" class="btn">첫 페이지</a>
+            <a href="?page={{ posts.previous_page_number }}" class="btn">이전 페이지</a>
+        {% endif %}
+
+        {% for page in page_range %}
+            {% if posts.number == page %}
+                <a href="?page={{ page }}" class="btn">{{ page }}</a>
+            {% else %}
+                <a href="?page={{ page }}" class="btn">{{ page }}</a>
+            {% endif %}
+        {% endfor %}
+
+        {% if posts.has_next %}
+            <a href="?page={{ posts.next_page_number }}" class="btn">다음 페이지</a>
+            <a href="?page={{ posts.paginator.num_pages }}" class="btn">끝 페이지</a></li>
+        {% endif %}
+        <div class="current">
+            {{ pages }}
+        </div>
+    </div>
 </div>
 
 
-<!--<div>cur_user.following : {{ user_following }}</div>-->
-<!--<div>cur_user.follwers : {{ user_follower }}</div>-->
 
 {% endblock %}
-
