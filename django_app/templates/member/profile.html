@@ -6,11 +6,14 @@
     <h3>{{ cur_user }}</h3>
 
     {% if user != cur_user %}
-        {% if cur_user in user.following %}
-        <button type="submit" class="btn">팔로우 취소</button>
-        {% else %}
-        <button type="submit" class="btn">팔로우</button>
-        {% endif %}
+         <form action="{% url 'member:follow_toggle' user_pk=cur_user.pk %}" method="POST">
+            {% csrf_token %}
+            {% if cur_user in user.following %}
+                <button type="submit" class="btn">팔로우 취소</button>
+            {% else %}
+                <button type="submit" class="btn">팔로우</button>
+            {% endif %}
+            </form>
     {% endif %}
 
     <h5>Following</h5>
@@ -29,7 +32,8 @@
     <ul class="profile-photo-list">
     {% for post in posts %}
       <li>
-        <img src="{{ post.photo.url }}" alt="" width="33%" height="300px">
+
+              <img src="{{ post.photo.url }}" alt="" width="33%" height="300px">
       </li>
     {% endfor %}
     </ul>
@@ -39,7 +43,6 @@
     {% endif %}
     </div>
 </div>
-
 
 
 {% endblock %}

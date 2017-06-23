@@ -1,13 +1,10 @@
 from django.contrib.auth.decorators import login_required
-from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
-from django.http import HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import \
-    authenticate, \
     login as django_login, \
-    logout as django_logout \
+    logout as django_logout
+from django.views.decorators.http import require_POST
 
-from post.models import Post
 from .forms import LoginForm
 from .forms import SignupForm
 
@@ -219,9 +216,19 @@ def profile(request, user_pk=None):
         # }
 
 
+@require_POST
 @login_required
 def follow_toggle(request, user_pk):
-    pass
+    # 'next' GET parameter값을 가져옴
+    next = request.GET.get('next')
+    # follow를 toggle할 대상유저
+    target_user = get_object_or_404(User, pk=user_pk)
+    # 요청 유저 (로그인 한 유저)의 follow_toggle() 메서드 실행
+    request.user.follow_toggle(target_user)
+    # next가 있으면 해당 위치로 아닐 경우 target_user의 profile 페이지로 이동
+    if next:
+        return redirect(next)
+    return redirect('member:profile', user_pk=user_pk)
 
 
 class CustomException(Exception):

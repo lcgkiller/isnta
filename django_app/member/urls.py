@@ -11,4 +11,7 @@ urlpatterns = [
     # profile view의 0번
     url(r'^profile/$', views.profile, name='my_profile'),
     url(r'^profile/(?P<user_pk>\d+)/$', views.profile, name='profile'),
+
+    # 팔로우 토글
+    url(r'^follow-toggle/(?P<user_pk>\d+)/$', views.follow_toggle, name='follow_toggle')
 ]
