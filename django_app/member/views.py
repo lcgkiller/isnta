@@ -110,7 +110,7 @@ def signup(request):
 
 
 def profile(request, user_pk=None):
-    NUM_POST_PAGE = 3
+    NUM_POST_PER_PAGE = 3
     # 0. urls.py에 연결
     # 1. User_pk에 해당하는 User를 cur_user키로 render
         # 또는 user = get_object_or_404(User, pk=user_pk)
@@ -172,10 +172,16 @@ def profile(request, user_pk=None):
 
     # page * 9만큼의 Post QuerySet을 리턴
 
-    posts = Post.objects.filter(author=user).order_by('-created_date')[:page * NUM_POST_PAGE]
+    posts = user.post_set.order_by('-created_date')[:page * NUM_POST_PER_PAGE]
+    post_count = user.post_set.count()
+    # next_page = 현재 page에서 보여주는 Post개수보다 post_count가 클 경우 전달받은 page + 1, 아닐 경우 None 할당
+    next_page = page + 1 if post_count > page * NUM_POST_PER_PAGE else None
     context = {
         'cur_user' : user,
         'posts': posts,
+        'post_count': post_count,
+        'page': page,
+        'next_page': next_page,
     }
 
     return render(request, 'member/profile.html', context)
