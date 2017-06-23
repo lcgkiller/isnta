@@ -55,6 +55,10 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.11/howto/deployment/checklist/
 
+# Facebook
+FACEBOOK_APP_ID = '285502471913589'
+FACEBOOK_SECRET_CODE = 'bfc8398eda366e321541f66decc2ff81'
+
 
 # Custom User
 AUTH_USER_MODEL = 'member.User'
@@ -106,6 +110,7 @@ TEMPLATES = [
 
                 # Custom context processors
                 'member.context_processors.forms',
+                'utils.context_processors.facebook_info',
             ],
         },
     },
