@@ -4,9 +4,13 @@ from . import views
 app_name = 'member'
 
 urlpatterns = [
-    url(r'^login/', views.login, name='login'),
-    url(r'^logout/', views.logout, name='logout'),
-    url(r'^signup/', views.signup, name='signup'),
+    # 로그인
+    url(r'^login/$', views.login, name='login'),
+    url(r'^login/facebook/', views.facebook_login, name='facebook_login'),
+    url(r'^logout/$', views.logout, name='logout'),
+
+
+    url(r'^signup/$', views.signup, name='signup'),
 
     # profile view의 0번
     url(r'^profile/$', views.profile, name='my_profile'),
@@ -17,4 +21,5 @@ urlpatterns = [
 
     # 프로필 에딧
     url(r'^profile/edit/$', views.profile_edit, name='profile_edit')
+
 ]

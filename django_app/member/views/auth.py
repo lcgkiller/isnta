@@ -1,17 +1,26 @@
+import code
+from pprint import pprint
+
+import requests
+from django.contrib import messages
+from django.http import HttpRequest
 from django.shortcuts import redirect, render
 
+from config import settings
 from member.forms import LoginForm, SignupForm
 
 from django.contrib.auth import \
     login as django_login, \
     logout as django_logout
 
-
 __all__ = (
     'login',
     'logout',
     'signup',
+    'facebook_login',
 )
+
+
 def login(request):
     # member/login.html 생성
     #   username, password, button이 있는 html 생성
@@ -104,3 +113,77 @@ def signup(request):
     }
     return render(request, 'member/signup.html', context)
 
+
+def facebook_login(request):
+    # Facebook_login view가 처음 호출될 때  유저가 Facebook login dialog에서 로그인 후, 페이스북에서 우리 서비스(Consumer)쪽으로 GET 파라미터를 이용해 'code'를 전달해준다. 전달받는 코드는 위 uri_direct
+    # facebook_login view가 처음 호출될 때 'code' request GET parameter받음
+    # code라는 부분이 없으면 로그인이 안된 것임. 족, 코드가 있을 때만 진행
+    code = request.GET.get('code')
+    app_access_token = '{}|{}'.format(
+        settings.FACEBOOK_APP_ID,
+        settings.FACEBOOK_SECRET_CODE,
+    )
+
+    def add_message_and_redirect_referer():
+        """
+        # 페이스북 로그인 오류 메시지를 request에 추가하고, 이전 페이지로 redirect
+        """
+        # 유저용 메세지
+        error_message_for_user = 'Facebook login error'
+        # request에 에러메세지를 전달
+        messages.error(request, error_message_for_user)
+        # 이전페이지로 redirect
+        return redirect(request.META['HTTP_REFERER'])
+
+    def get_access_token(code):
+        """
+        code를 받아 액세스토큰 교환 URL에 요청, 이후 해당 액세스 토큰을 반환
+        오류 발생시 오류메시지를 리턴
+        """
+        # 액세스토큰의 코드를 교환할 URL
+        url_access_token = 'https://graph.facebook.com/v2.9/oauth/access_token'
+
+        # 이전에 요청했던 redirect_uri와 같은 값을 만들어 줌 (access_token을 요청할 때 필요함)
+        redirect_uri = '{}://{}{}'.format(
+            request.scheme,
+            request.META['HTTP_HOST'],
+            request.path,
+        )
+        # 액세스토큰의 코드 교환
+        # uri생성을 위한 params
+        url_access_token_params = {
+            'client_id': settings.FACEBOOK_APP_ID,
+            'redirect_uri': redirect_uri,
+            'client_secret': settings.FACEBOOK_SECRET_CODE,
+            'code': code,
+        }
+        # 해당 URL에 get요청 후 결과 (json형식)를 파이썬 object로 변환 (result변수)
+        response = requests.get(url_access_token, params=url_access_token_params)
+        result = response.json()
+
+        if 'access_token' in result:
+            return result['access_token']
+
+        # 액세스토큰 코드교환 결과에 오류가 있을 경우
+        # 해당 오류를 request에 message로 넘기고 이전페이지 (HTTP_REFERRER)로 redirect
+        elif 'error' in result:
+            raise Exception(result['error'])
+            # 상세 오류 메세지 (개발자용)
+            # error_message = 'Facebook login error\n  type: {}\n  message: {}'.format(
+            #     result['error']['type'],
+            #     result['error']['message']
+            # )
+
+        else:
+            raise Exception('Unknown error')
+
+    # code키값이 존재하지 않으면 로그인을 더이상 진행하지 않음
+    if not code:
+        return add_message_and_redirect_referer()
+    try:
+        access_token = get_access_token(code)
+    except Exception as e:
+        print(e)
+        return add_message_and_redirect_referer()
+
+        # 액세스토큰 검사
