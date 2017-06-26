@@ -124,6 +124,21 @@ def facebook_login(request):
         settings.FACEBOOK_SECRET_CODE,
     )
 
+    # 커스텀 익셉션을 만든 이유. 요청을 했을 때 에러가 났다는 건 정상적인 요청이 아니라는 듯임.
+    class GetAccessTokenException(Exception):
+        def __init__(self, *args, **kwargs):
+            error_dict = args[0]['data']['error']
+            self.code = error_dict['code']
+            self.message = error_dict['message']
+            self.is_valid = error_dict['is_valid']
+            self.scopes = error_dict['scopes']
+
+    class DebugTokenException(Exception):
+        def __init__(self, *args, **kwargs):
+            error_dict = args[0]['data']['error']
+            self.code = error_dict['code']
+            self.message = error_dict['message']
+
     def add_message_and_redirect_referer():
         """
         # 페이스북 로그인 오류 메시지를 request에 추가하고, 이전 페이지로 redirect
@@ -167,23 +182,58 @@ def facebook_login(request):
         # 액세스토큰 코드교환 결과에 오류가 있을 경우
         # 해당 오류를 request에 message로 넘기고 이전페이지 (HTTP_REFERRER)로 redirect
         elif 'error' in result:
-            raise Exception(result['error'])
-            # 상세 오류 메세지 (개발자용)
-            # error_message = 'Facebook login error\n  type: {}\n  message: {}'.format(
-            #     result['error']['type'],
-            #     result['error']['message']
-            # )
-
+            raise GetAccessTokenException(result)
         else:
             raise Exception('Unknown error')
+
+    def debug_token(token):
+        """
+        결과 : {'data': {'is_valid': True, 'scopes': ['public_profile'], 'app_id': '285502471913589', 'expires_at': 1503625854, 'user_id': '3833136887369', 'application': 'lcgkiller', 'issued_at': 1498441854}}
+        """
+        # 액세스토큰 검사
+        url_debug_token = 'https://graph.facebook.com/debug_token'
+        url_debug_token_params = {
+            'input_token': token,
+            'access_token': app_access_token
+        }
+        response = requests.get(url_debug_token, url_debug_token_params)
+        result = response.json()
+        if 'error' in result[
+            'data']:  # {'data': {'scopes': [], 'error': {'message': 'Malformed access token EAAEDqblrwHUBALlobI9JT3Bum5ZCvi0pHcx4gCqSdwpC9ZAnIprFczoB48aiG9GfGqMc7W3PLyJ3KDI4c9W7WheO52z7e7U4Ei9ioABqeZCGrZBd9F7I08Kp1L72ff7silqr5gfv9ZArMlTRIOQtZC09nbovxiY1ZCfMLTke63QMQZDZDasdf', 'code': 190}, 'is_valid': False}}
+            raise DebugTokenException(result)
+        else:
+            return result
+
+    def get_user_info(user_id, token):
+        url_user_info = 'https://graph.facebook.com/v2.9/{user_id}'.format(user_id=user_id)
+        url_user_info_params = {
+            'access_token': token,
+            'fields': ','.join(['id', 'name', 'first_name', 'last_name', 'picture', 'email', 'gender']),
+        }
+        response = requests.get(url_user_info, params=url_user_info_params)
+        result = response.json()
+        return result
 
     # code키값이 존재하지 않으면 로그인을 더이상 진행하지 않음
     if not code:
         return add_message_and_redirect_referer()
     try:
+        # 이 view에 GET parameter로 전달된 code를 사용해서 access_token을 받아옴. 실패시 GetAcessTokenException이 발생
         access_token = get_access_token(code)
-    except Exception as e:
-        print(e)
-        return add_message_and_redirect_referer()
 
-        # 액세스토큰 검사
+        # 위에서 받은 access_token을 이용해 debug_token을 요청. 성공시 토큰을 디버그한 결과 (id, scope)가 리턴.. 실패시 DebugTOeknException이 발생
+        debug_result = debug_token(access_token)
+
+        # debug_result에 있는 user_id값을 이용해 GraphAPI에 유저정보를 요청
+        user_info = get_user_info(user_id=debug_result['data']['user_id'], token=access_token)
+        print("USER INFO :", user_info)
+
+
+    except GetAccessTokenException as e:
+        print(e.code)
+        print(e.message)
+        return add_message_and_redirect_referer()
+    except DebugTokenException as e:
+        print(e.code)
+        print(e.message)
+        return add_message_and_redirect_referer()
