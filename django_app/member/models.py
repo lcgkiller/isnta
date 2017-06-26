@@ -1,11 +1,58 @@
-from django.contrib.auth.models import AbstractUser
+import re
 
-
-# Create your models here.
+import requests
+from django.conf import settings
+from django.contrib.auth.models import AbstractUser, UserManager as DefaultUserManager
+from django.core.files import File
+from django.core.files.temp import NamedTemporaryFile
 from django.db import models
 
 from utils.fields import CustomImageField
 
+
+class UserManager(DefaultUserManager):
+
+    def get_or_create_facebook_user(self, user_info):
+        # USER_INFO의 id값이 혹여나 중복되는 걸 막음
+        username = '{}_{}_{}'.format(
+            self.model.USER_TYPE_FACEBOOK,
+            settings.FACEBOOK_APP_ID,
+            user_info['id']
+        )
+
+        user, user_created = self.get_or_create(
+            username=username,
+            user_type=self.model.USER_TYPE_FACEBOOK,
+            defaults={  # 페이스북 id는 고유하지만, 다른 프로필은 바꿀 수 있기 때문에 디폴트 값을 지정
+                'last_name': user_info.get('last_name', ''),
+                'first_name': user_info.get('first_name', ''),
+                'email': user_info.get('email', ''),
+            }
+        )
+
+        # 새로운 유저가 생성될 때만 프로필 이미지를 받아옴
+        if user_created:
+            # 프로필 이미지 다운로드 (메모리에 파일 객체를 임시로 만듦으로써)
+            """
+            https://scontent.xx.fbcdn.net/v/t1.0-1/p50x50/15965492_301767310224882_6951290062601071961_n.jpg?oh=94c5a85d8205ae4b7cfe7d2a307b4d23&oe=59D4453A'
+            """
+            url_picture = user_info['picture']['data']['url']  # URL
+
+            p = re.compile(r'.*\.([^?]+)')  # 파일 확장자를 가져와 유저 고유의 파일명을 만들어준다.
+            file_ext = re.search(p, url_picture).group(1)
+            file_name = '{}.{}'.format(
+                user.pk,
+                file_ext,
+            )
+
+            temp_file = NamedTemporaryFile(delete=False)  # 이미지 파일을 임시저장할 파일객체
+            response = requests.get(url_picture)  # 프로필 이미지 URL에 대한 get 요청을 함(이미지 다운로드)
+            temp_file.write(response.content)  # 요청 결과를 temp_file에 기록
+
+            # ImageField의 save() 메서드를 호출해서 해당 임시파일 객체를 주어진 이름의 파일로 저장한다.
+            # 저장하는 파일명은 위에서 만든 <유저pk.주어진파일확장자>
+            user.img_profile.save(file_name, File(temp_file))
+        return user
 
 class User(AbstractUser):
     """
@@ -23,6 +70,14 @@ class User(AbstractUser):
     
     없음 : 내가 follow하고 있는 사람 1명
     """
+    # (0626) 유저모델을 AUTH_USER_MODEL로 사용하도록 settings.py에 설정
+    USER_TYPE_DJANGO = 'd'
+    USER_TYPE_FACEBOOK = 'f'
+    USER_TYPE_CHOICES = (
+        (USER_TYPE_DJANGO, 'Django'),
+        (USER_TYPE_FACEBOOK, 'Facebook'),
+    )
+    user_type = models.CharField(max_length=1, choices=USER_TYPE_CHOICES, default=USER_TYPE_DJANGO)
     nickname = models.CharField(max_length=24, null=True, unique=True)
 
     # (0623) 커스텀 이미지 필드로 바꿈
@@ -39,6 +94,11 @@ class User(AbstractUser):
         through='Relation',     # member_relation 테이블이 새로 생긴다.
         symmetrical=False,
     )
+
+    # (0626)
+    # 위에서 만든 CustomUserManager를 objects속성으로 사용
+    # User.objects.create_facebook_user() 메서드 실행 가능
+    objects = UserManager()
 
     def __str__(self):
         return self.nickname or self.username

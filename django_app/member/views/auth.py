@@ -1,17 +1,13 @@
-import code
-from pprint import pprint
-
 import requests
+from django.conf import settings
 from django.contrib import messages
-from django.http import HttpRequest
 from django.shortcuts import redirect, render
 
-from config import settings
 from member.forms import LoginForm, SignupForm
 
 from django.contrib.auth import \
     login as django_login, \
-    logout as django_logout
+    logout as django_logout, get_user_model
 
 __all__ = (
     'login',
@@ -19,6 +15,7 @@ __all__ = (
     'signup',
     'facebook_login',
 )
+User = get_user_model()
 
 
 def login(request):
@@ -198,8 +195,8 @@ def facebook_login(request):
         }
         response = requests.get(url_debug_token, url_debug_token_params)
         result = response.json()
-        if 'error' in result[
-            'data']:  # {'data': {'scopes': [], 'error': {'message': 'Malformed access token EAAEDqblrwHUBALlobI9JT3Bum5ZCvi0pHcx4gCqSdwpC9ZAnIprFczoB48aiG9GfGqMc7W3PLyJ3KDI4c9W7WheO52z7e7U4Ei9ioABqeZCGrZBd9F7I08Kp1L72ff7silqr5gfv9ZArMlTRIOQtZC09nbovxiY1ZCfMLTke63QMQZDZDasdf', 'code': 190}, 'is_valid': False}}
+        if 'error' in result['data']:
+             # {'data': {'scopes': [], 'error': {'message': 'Malformed access token EAAEDqblrwHUBALlobI9JT3Bum5ZCvi0pHcx4gCqSdwpC9ZAnIprFczoB48aiG9GfGqMc7W3PLyJ3KDI4c9W7WheO52z7e7U4Ei9ioABqeZCGrZBd9F7I08Kp1L72ff7silqr5gfv9ZArMlTRIOQtZC09nbovxiY1ZCfMLTke63QMQZDZDasdf', 'code': 190}, 'is_valid': False}}
             raise DebugTokenException(result)
         else:
             return result
@@ -226,8 +223,11 @@ def facebook_login(request):
 
         # debug_result에 있는 user_id값을 이용해 GraphAPI에 유저정보를 요청
         user_info = get_user_info(user_id=debug_result['data']['user_id'], token=access_token)
-        print("USER INFO :", user_info)
+        user = User.objects.get_or_create_facebook_user(user_info)
 
+    # 해당 request에 유저를 로그인시킴
+        django_login(request, user)
+        return redirect(request.META['HTTP_REFERER'])
 
     except GetAccessTokenException as e:
         print(e.code)

@@ -20,7 +20,10 @@ urlpatterns = [
     url(r'^comment/(?P<comment_pk>[0-9]+)/delete/$', views.comment_delete, name='comment_delete'),
 
     # 해시태그
-    url(r'^tag/(?P<tag_name>\w+)/$', views.hashtag_post_list, name='hashtag_post_list')
+    url(r'^tag/(?P<tag_name>\w+)/$', views.hashtag_post_list, name='hashtag_post_list'),
+
+    # 유튜브
+    url(r'^youtube/search/(?P<q>\w+)/$', views.youtube_research, name='youtube_research'),
 
 ]
 
