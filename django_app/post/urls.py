@@ -23,7 +23,7 @@ urlpatterns = [
     url(r'^tag/(?P<tag_name>\w+)/$', views.hashtag_post_list, name='hashtag_post_list'),
 
     # 유튜브
-    url(r'^youtube/search/(?P<q>\w+)/$', views.youtube_research, name='youtube_research'),
+    url(r'^youtube/search/$', views.youtube_search, name='youtube_research_default'),
 
 ]
 

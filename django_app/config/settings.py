@@ -59,6 +59,8 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 FACEBOOK_APP_ID = '285502471913589'
 FACEBOOK_SECRET_CODE = 'bfc8398eda366e321541f66decc2ff81'
 
+# Youtube
+YOUTUBE_SECRET_CODE = 'AIzaSyAALZQrZ42K3L3mv4DysURs0fdfdprpYjw'
 
 # Custom User
 AUTH_USER_MODEL = 'member.User'
