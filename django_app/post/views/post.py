@@ -10,7 +10,7 @@ from post.forms import CommentForm
 from ..forms import PostForm
 from ..models import Post, Tag
 
-from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage, InvalidPage  # (0620) # 페이지네이터
+from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage  # (0620) # 페이지네이터
 
 User = get_user_model()  # get_user_model : 자동으로 Django에서 인증에 사용되는 User모델클래스를 리턴
 

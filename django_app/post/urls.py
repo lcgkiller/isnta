@@ -24,6 +24,7 @@ urlpatterns = [
 
     # 유튜브
     url(r'^youtube/search/$', views.youtube_search, name='youtube_research_default'),
+    url(r'^youtube/post/create/$', views.post_create_with_video, name='youtube_post_create')
 
 ]
 

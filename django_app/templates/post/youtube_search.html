@@ -7,10 +7,15 @@
     </form>
 
     <div>
-        {% for item in videos %}
-            <li><img src="{{ item.thumbnails }}" alt=""></li>
-            <a href="https://www.youtube.com/watch?v={{ item.youtube_id }}">{{ item.title }}</a>
-            <li class="btn">포스팅하기</li>
+        {{ re_pattern }}
+        {% for video in videos %}
+            <div><img src="{{ video.thumbnails }}" alt="" width="200px" height="200px"></div>
+            <div><a href="https://www.youtube.com/watch?v={{ video.youtube_id }}">{{ video.title }}</a></div>
+            <form action="{% url 'posts:youtube_post_create' %}" method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                <input type="hidden" name="video_pk" value="{{ video.pk }}">
+                <button type="submit" class="btn btn-primary">포스팅하기</button>
+            </form>
         {% endfor %}
     </div>
 </div>

@@ -200,9 +200,3 @@ class Relation(models.Model):
         # Relation.objects.create(from_user=lhy, to_user="박보영")은 같은 의미.
 
 
-class Video(models.Model):
-    youtube_id = models.CharField(max_length=50, blank=True, null=True, unique=True)
-    title = models.CharField(max_length=80, blank=True, null=True)
-    thumbnails = models.ImageField(upload_to='youtube')
-    description = models.TextField(blank=True, null=True)
-    created_date = models.DateTimeField(blank=True, null=True)
