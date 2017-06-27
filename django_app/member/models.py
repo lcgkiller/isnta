@@ -46,13 +46,14 @@ class UserManager(DefaultUserManager):
             )
 
             temp_file = NamedTemporaryFile(delete=False)  # 이미지 파일을 임시저장할 파일객체
-            response = requests.get(url_picture)  # 프로필 이미지 URL에 대한 get 요청을 함(이미지 다운로드)
+            response = requests.get(p, url_picture)  # 프로필 이미지 URL에 대한 get 요청을 함(이미지 다운로드)
             temp_file.write(response.content)  # 요청 결과를 temp_file에 기록
 
             # ImageField의 save() 메서드를 호출해서 해당 임시파일 객체를 주어진 이름의 파일로 저장한다.
             # 저장하는 파일명은 위에서 만든 <유저pk.주어진파일확장자>
             user.img_profile.save(file_name, File(temp_file))
         return user
+
 
 class User(AbstractUser):
     """
@@ -198,3 +199,10 @@ class Relation(models.Model):
         # lhy.follow_relations.create(to_user="박보영")
         # Relation.objects.create(from_user=lhy, to_user="박보영")은 같은 의미.
 
+
+class Video(models.Model):
+    youtube_id = models.CharField(max_length=50, blank=True, null=True, unique=True)
+    title = models.CharField(max_length=80, blank=True, null=True)
+    thumbnails = models.ImageField(upload_to='youtube')
+    description = models.TextField(blank=True, null=True)
+    created_date = models.DateTimeField(blank=True, null=True)
