@@ -6,15 +6,14 @@ from django.views.decorators.http import require_POST
 
 from config import settings
 from post.models import Video, Post, Comment
-
+from utils import youtube
 
 __all__ = (
     'youtube_search',
     'post_create_with_video',
 )
 
-
-def youtube_search(request):
+def youtube_search_orginal(request):
     # [1] 기초숙제 : 검색결과를 DB에 저장하고, 해당내용을 템플릿에서 보여주기 (0626)
     # 1. 유튜브 영상을 저장할 class Video(models.Model) 생성
     # 2. 검색결과의 videoId를 Video의 youtube_id필드에 저장
@@ -76,6 +75,23 @@ def youtube_search(request):
 
     return render(request, 'post/youtube_search.html', context)
 
+def youtube_search(request, Q=None):
+    context = dict()
+    q = request.GET.get('q')
+    if q:
+        # YouTube 검색부분을 패키지화
+        data = youtube.search(q)
+        print("데이터 출력 :",data)
+        for item in data['items']:
+            Video.objects.create_from_search_reslt(item)
+        re_pattern = ''.join(['(?=.*{})'.format(item) for item in q.split()])
+        videos = Video.objects.filter(
+            Q(title__regex=re_pattern) |
+            Q(description__regex=re_pattern)
+        )
+
+        context['videos'] = videos
+    return render(request, 'post/youtube_search.html', context)
 @require_POST
 @login_required
 def post_create_with_video(request):
