@@ -4,6 +4,7 @@
 ### custom ###
 .idea
 *.swp
+dump.json
 ### Django ###
 *.log
 *.pot
