@@ -30,7 +30,6 @@ def youtube_search_orginal(request):
 
     url = "https://www.googleapis.com/youtube/v3/search"
     q = request.GET.get('q')
-    context = {}
     if q:
         url_params = {
             'part': 'snippet',
@@ -58,11 +57,10 @@ def youtube_search_orginal(request):
         #     videos.filter(title__contains=cur_q)
 
         # regex ( and 연산 )
-        # re_pattern = ''.join(['(?=.*{})'.format(item) for item in q.split()])
-        # videos = Video.objects.filter(title__regex=r'')
+        re_pattern = ''.join(['(?=.*{})'.format(item) for item in q.split()])
 
         # regex ( or 연산 )
-        re_pattern = '|'.join(['({})'.format(item) for item in q.split()])
+        # re_pattern = '|'.join(['({})'.format(item) for item in q.split()])
 
         videos = Video.objects.filter(
             Q(title__regex=r'{}'.format(re_pattern)) |
@@ -73,25 +71,30 @@ def youtube_search_orginal(request):
             're_pattern': re_pattern,
         }
 
+    else:
+        context = {}
+
     return render(request, 'post/youtube_search.html', context)
 
-def youtube_search(request, Q=None):
+
+def youtube_search(request):
+    # YouTube 검색부분을 패키지화
+
     context = dict()
     q = request.GET.get('q')
     if q:
-        # YouTube 검색부분을 패키지화
         data = youtube.search(q)
-        print("데이터 출력 :",data)
         for item in data['items']:
             Video.objects.create_from_search_reslt(item)
         re_pattern = ''.join(['(?=.*{})'.format(item) for item in q.split()])
         videos = Video.objects.filter(
-            Q(title__regex=re_pattern) |
-            Q(description__regex=re_pattern)
+            Q(title__iregex=re_pattern) |
+            Q(description__iregex=re_pattern)
         )
-
         context['videos'] = videos
     return render(request, 'post/youtube_search.html', context)
+
+
 @require_POST
 @login_required
 def post_create_with_video(request):

@@ -2,21 +2,26 @@
 
 {% block content %}
 <div class="content">
+    <h3>YouTube Search</h3>
     <form action="">
-        <input type="text" name="q" placeholder="YOUTUBE에서 검색할 키워드를 입력하세요">
+        <input type="text" name="q" placeholder="YOUTUBE 검색키워드">
     </form>
 
     <div>
-        {{ re_pattern }}
+        <h4>{{ re_pattern }}</h4>
+    <ul>
         {% for video in videos %}
-            <div><img src="{{ video.thumbnails }}" alt="" width="200px" height="200px"></div>
+        <li style="margin-bottom: 10px;">
+            <img src="{{ video.thumbnails }}" alt="" width="200px" height="200px">
             <div><a href="https://www.youtube.com/watch?v={{ video.youtube_id }}">{{ video.title }}</a></div>
-            <form action="{% url 'posts:youtube_post_create' %}" method="POST" enctype="multipart/form-data">
+            <form action="{% url 'posts:youtube_post_create' %}" method="POST">
                 {% csrf_token %}
                 <input type="hidden" name="video_pk" value="{{ video.pk }}">
                 <button type="submit" class="btn btn-primary">포스팅하기</button>
             </form>
+        </li>
         {% endfor %}
+    </ul>
     </div>
 </div>
 {% endblock %}

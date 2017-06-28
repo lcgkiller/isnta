@@ -128,16 +128,23 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'instagram',
-        'USER': 'instagram',
+        'USER': 'lcg',
         'PASSWORD': 'rmsepdi1!',
         'HOST': 'localhost',
         'PORT': '5432',
+        'TEST': {
+            'USER': 'lhy',
 
+        }
+    },
+
+    'sqlite': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
 
-
-# Password validation
+    # Password validation
 # https://docs.djangoproject.com/en/1.11/ref/settings/#auth-password-validators
 
 AUTH_PASSWORD_VALIDATORS = [

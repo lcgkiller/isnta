@@ -31,7 +31,7 @@ class UserManager(DefaultUserManager):
         )
 
         # 새로운 유저가 생성될 때만 프로필 이미지를 받아옴
-        if user_created:
+        if user_created and user_info.get('picture'):
             # 프로필 이미지 다운로드 (메모리에 파일 객체를 임시로 만듦으로써)
             """
             https://scontent.xx.fbcdn.net/v/t1.0-1/p50x50/15965492_301767310224882_6951290062601071961_n.jpg?oh=94c5a85d8205ae4b7cfe7d2a307b4d23&oe=59D4453A'

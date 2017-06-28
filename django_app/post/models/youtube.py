@@ -21,7 +21,7 @@ class VideoManager(models.Manager):
                 'title': title,
                 'description': description,
                 'thumbnails': thumbnails,
-                'created_date': created_date,
+                # 'created_date': created_date,
             }
         )
         print('Video({}) is {}'.format(
@@ -34,7 +34,7 @@ class VideoManager(models.Manager):
 
 class Video(models.Model):
     youtube_id = models.CharField(max_length=50, unique=True)
-    title = models.CharField(max_length=80, blank=True, null=True)
+    title = models.CharField(max_length=200, blank=True, null=True)
     thumbnails = models.CharField(max_length=200)
     description = models.TextField(blank=True)
     created_date = models.DateTimeField(blank=True, null=True)

@@ -12,17 +12,23 @@
     <div class="post-photo-container">
         {% if type == 'list' %}
         <div class="photo-container">
-            <img src="{{ post.photo.url }}" alt="">
-            <div class="overlay"></div>
-            <div class="overlay-button">
+            {% if post.video %}
+                <iframe width="100%" height="600" src="https://www.youtube.com/embed/{{ post.video.youtube_id }}" frameborder="0" allowfullscreen></iframe>
+            {% else %}
+                <img src="{{ post.photo.url }}" alt="">
+                <div class="overlay"></div>
+                <div class="overlay-button">
                 <a href="{% url 'posts:post_detail' post.pk %}"> DETAIL </a>
                 {% if user == post.author %}
-                <a href="{% url 'posts:post_modify' post.pk %}"> MODIFY </a>
-                <a href="{% url 'posts:post_delete' post.pk %}" onclick="return confirm(&quot; 삭제하시겠습니까? &quot;);">
-                    <span class="yes">DELETE</span>
-                </a>
+                    <a href="{% url 'posts:post_modify' post.pk %}"> MODIFY </a>
+                    <a href="{% url 'posts:post_delete' post.pk %}"
+                       onclick="return confirm(&quot; 삭제하시겠습니까? &quot;);"> <span class="yes">DELETE</span>
+                   </a>
+                </div>
                 {% endif %}
-            </div>
+            {% endif %}
+
+
         </div>
         {% else %}
         <img src="{{ post.photo.url }}" alt="">
