@@ -2,10 +2,11 @@ from django import forms
 from django.contrib.auth import get_user_model
 
 from ..models import Post, Comment
+
 User = get_user_model()
 
-class PostForm(forms.ModelForm):
 
+class PostForm(forms.ModelForm):
     # 생성자를 조작해서 실제 Post의 photo필드는 blank=True
     #   (Form에서 required=False)이지만, Form을 사용할때는 반드시 photo를 받도록 required=True) 한다.
     def __init__(self, *args, **kwargs):
