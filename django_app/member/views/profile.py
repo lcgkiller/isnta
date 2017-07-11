@@ -1,6 +1,7 @@
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, render, redirect
+from django.urls import reverse
 
 from member.forms import UserEditForm
 
@@ -11,6 +12,11 @@ __all__ = (
     'profile_edit',
 )
 def profile(request, user_pk=None):
+    # (0628) 유저가 로그인하지 않고, user_pk도 주어지지 안ㅇ흔 경우 my_profile에 접근하려는 경우 로그인 페이지로 리다이렉트
+    if not request.user.is_authenticated and not user_pk:
+        login_url = reverse('member:login')
+        redirect_url = login_url + '?next=' + request.get_full_path()
+        return redirect(redirect_url)
     NUM_POST_PER_PAGE = 3
     # 0. urls.py에 연결
     # 1. User_pk에 해당하는 User를 cur_user키로 render

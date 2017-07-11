@@ -114,7 +114,7 @@ class User(AbstractUser):
         # 해당 user를 follow하는 Relation을 생성한다.
         # 이미 follow 상태일 경우에는 아무일도 하지 않는다.
 
-        # Relatio 모델의 Manager를 사용하는 방법
+        # Relation 모델의 Manager를 사용하는 방법
         Relation.objects.get_or_create(from_user=self, to_user=user)
 
         # self로 주어진 User로부터 Relation의 from_user에 해당하는 RelatedManger를 사용

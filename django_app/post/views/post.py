@@ -204,7 +204,7 @@ def post_like_toggle(request, post_pk):
     # 3. 이후 create 여부에 따라 해당 PostLike인스턴스를 삭제 또는 그냥 넘어가기
     # post_like_created가 get_or_create를 통해 새로운 PostLike가 만들어졌는지, 아니면 기존에 있었는지 여부를 나타냄
     if not post_like_created:
-        # 기존에 PostLike가 있었따면 삭제한다.
+        # 기존에 PostLike가 있었다면 삭제한다.
         post_like.delete()
 
     # 4. 리턴주소가 next가 주어질 경우 next, 아닐 경우 post_detail로

@@ -9,10 +9,10 @@ urlpatterns = [
     url(r'^login/facebook/', views.facebook_login, name='facebook_login'),
     url(r'^logout/$', views.logout, name='logout'),
 
-
+    # 회원가입
     url(r'^signup/$', views.signup, name='signup'),
 
-    # profile view의 0번
+    # 프로필
     url(r'^profile/$', views.profile, name='my_profile'),
     url(r'^profile/(?P<user_pk>\d+)/$', views.profile, name='profile'),
 
