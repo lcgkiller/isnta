@@ -13,7 +13,8 @@ class UserSerializer(serializers.ModelSerializer):
         fields = (
             'pk',
             'username',
-            'nickname'
+            'nickname',
+            'profile_image',
         )
 
         # serializers의 __init__ 파일 구현
@@ -22,6 +23,24 @@ class UserSerializer(serializers.ModelSerializer):
         # urls.urls_apis에 UserRetrieveUpdateDestroyView.as_view()를 연결
         # config.urls.urls_apis에 member.urls.urls_apis를 연결
 
+class UserUpdateSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = User
+        fields = (
+            'pk',
+            'username',
+            'ori_password',
+            'password1',
+            'password2',
+            'profile_image',
+        )
+        read_only_fields = (
+            'username',
+        )
+
+        # validate_<field_name>을 이용해서 ori_password, password1, 2가 왔을 경우 Password return
+        # 그 외의 경우에는 필드 업데이
 
 class UserCreationSerializer(serializers.Serializer):
     username = serializers.CharField(
